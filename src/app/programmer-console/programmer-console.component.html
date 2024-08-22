@@ -1,0 +1,109 @@
+<div class="banner">
+    <h1 class="banner-title">Scraping Object Manager</h1>
+    <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu">
+      <mat-icon>apps</mat-icon>
+    </button>
+  </div>
+
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>settings</mat-icon>
+      <span>Settings</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>info</mat-icon>
+      <span>About</span>
+    </button>
+  </mat-menu>
+  
+<form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
+    <div class="section">
+        <h2>Company Details</h2>
+        <mat-form-field appearance="fill">
+            <mat-label>Company ID</mat-label>
+            <input matInput id="companyId" type="text" formControlName="companyId">
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill">
+            <mat-label>Company Name</mat-label>
+            <input matInput id="companyName" type="text" formControlName="companyName">
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill">
+            <mat-label>Headquarters Local Time</mat-label>
+            <input matInput id="headquartersLocalTime" type="text" formControlName="headquartersLocalTime">
+        </mat-form-field>
+
+        <!-- Category Selection -->
+        <mat-form-field appearance="fill">
+            <mat-label>Categories</mat-label>
+            <mat-select formControlName="categories" multiple>
+                <mat-option *ngFor="let category of categoriesList" [value]="category">{{ category }}</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+  
+    <div class="section">
+        <h2>Scraping Object</h2>
+        <div class="form-row">
+            <div class="form-group">
+                <mat-form-field appearance="fill">
+                    <mat-label>Description</mat-label>
+                    <input matInput id="objectDescription" type="text" formControlName="objectDescription">
+                </mat-form-field>
+            </div>
+            <div class="form-group">
+                <mat-form-field appearance="fill">
+                    <mat-label>Frequency</mat-label>
+                    <mat-select formControlName="objectFrequency" (selectionChange)="onFrequencyChange()">
+                        <mat-option value="MINUTELY">Every Minute</mat-option>
+                        <mat-option value="HOURLY">Every Hour</mat-option>
+                        <mat-option value="DAILY">Every Day</mat-option>
+                        <mat-option value="WEEKLY">Every Week</mat-option>
+                        <mat-option value="MONTHLY">Every Month</mat-option>
+                        <mat-option value="YEARLY">Every Year</mat-option>
+                        <mat-option value="custom">Custom</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div *ngIf="customCronVisible">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Custom Frequency (CRON format)</mat-label>
+                        <input matInput id="customFrequency" type="text" formControlName="customCron" placeholder="e.g., */5 * * * *">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="form-group">
+                <mat-form-field appearance="fill">
+                    <mat-label>Code</mat-label>
+                    <input matInput id="objectCode" type="text" formControlName="objectCode">
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+  
+    <button mat-raised-button color="primary" type="submit" class="save-button">{{ selectedObjectIndex !== null ? 'Update' : 'Save' }}</button>
+    <button mat-button type="button" (click)="cancelEdit()" *ngIf="selectedObjectIndex !== null" class="cancel-button">Cancel</button>
+</form>
+
+<div *ngIf="scrapingObjects.length > 0" class="submitted-objects">
+    <h3>Submitted Scraping Objects</h3>
+    <ul>
+        <li *ngFor="let object of scrapingObjects; let i = index" class="object-item">
+            <div class="object-part">{{ object.objectDescription }}</div>
+            <div class="object-part">{{ object.objectFrequency }}</div>
+            <div class="object-part">{{ object.objectCode }}</div>
+            <div class="object-part">
+                <button mat-icon-button color="primary" (click)="editObject(i)" class="edit-button">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" (click)="deleteObject(companyForm.get('companyId')?.value ?? '', object.objectCode)" class="delete-button">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,73 @@
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+  <mat-card>
+    <mat-card-title>Sign Up</mat-card-title>
+    <mat-card-content>
+      <div>
+        <mat-form-field>
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username">
+          <mat-error *ngIf="signupForm.get('username')?.hasError('required')">
+            Username is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email">
+          <mat-error *ngIf="signupForm.get('email')?.hasError('required')">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="signupForm.get('email')?.hasError('email')">
+            Please enter a valid email address
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+      <div>
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input matInput [type]="'password'" formControlName="password">
+          <mat-error *ngIf="signupForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="signupForm.get('password')?.hasError('minlength')">
+            Password must be at least 6 characters long
+          </mat-error>
+        </mat-form-field>
+      </div>
+    
+      <div>
+        <mat-form-field>
+          <mat-label>Confirm Password</mat-label>
+          <input matInput [type]="'password'" formControlName="confirmPassword">
+          <mat-error *ngIf="signupForm.errors?.['passwordsMismatch']">
+            Passwords do not match
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="role">
+            <mat-option *ngFor="let role of roles" [value]="role">{{ role | titlecase }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="signupForm.get('role')?.hasError('required')">
+            Role is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div *ngIf="errorMessage" class="error-message">
+        <mat-error>{{ errorMessage }}</mat-error>
+      </div>
+      
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!signupForm.valid">Sign Up</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
