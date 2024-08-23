@@ -1,0 +1,65 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black; /* Optional background color */
+    overflow: hidden;
+  }
+  
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .center-content {
+    text-align: center;
+    color: white;
+    z-index: 10; /* Ensure it stays above the animated background */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .center-content h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+  }
+  
+  .center-content .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .center-content button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    color: white;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .center-content button:hover {
+    background-color: white;
+    color: black;
+  }
+
+  .ui {
+    display: none;
+}
+
+canvas {
+    display: block; /* Ensure canvas doesn't reserve space */
+    position: absolute; /* Overlay it on the page */
+    top: 0;
+    left: 0;
+  }

@@ -1,19 +1,74 @@
-mat-card {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-  }
-  
-  mat-form-field {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  
-  button {
-    width: 100%;
-  }
-  
-  .error-message {
-    color: red;
-    margin-top: 10px;
-  }
+.signup-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.signup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+.company-name {
+  color: white;
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.signup-card {
+  width: 100%;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+mat-card-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+mat-card-subtitle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.signup-button {
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+.login-prompt {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 0;
+}
+
+.login-prompt a {
+  color: #3f51b5;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+  text-align: center;
+}

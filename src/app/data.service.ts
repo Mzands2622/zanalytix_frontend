@@ -92,7 +92,8 @@ getUserPreferences(userId: string): Observable<any> {
     };
   }
 
-  getUserContactInformation(userId: string): Observable<any> {
+    getUserContactInformation(userId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/user-contact-information/${userId}`);
   }
+  
 }

@@ -20,6 +20,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { AbstractControl } from '@angular/forms';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component'; // Adjust the path as needed
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+
+
+
 
 @Component({
   selector: 'app-user-console',
@@ -40,7 +46,8 @@ import { AbstractControl } from '@angular/forms';
     MatOptionModule,
     MatSlideToggleModule,
     MatExpansionModule,
-    FormsModule
+    FormsModule,
+    MatDialogModule
   ],
 })
 export class UserConsoleComponent implements OnInit {
@@ -70,7 +77,8 @@ export class UserConsoleComponent implements OnInit {
     private authService: AuthService,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog  // Inject MatDialog here
   ) {
     this.contactForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -106,6 +114,88 @@ export class UserConsoleComponent implements OnInit {
     this.filteredPreferenceSets = this.preferenceSets.controls as FormGroup[];
 
   }
+
+  getCategoryErrorMessage(index: number): string {
+    const preferenceSet = this.getPreferenceSetAsFormGroup(index);
+    const categoriesGroup = preferenceSet.get('categories') as FormGroup;
+    return Object.values(categoriesGroup.value).some(value => value === true) 
+      ? '' : 'Please select at least one category.';
+  }
+  
+  getCompanyErrorMessage(index: number): string {
+    const preferenceSet = this.getPreferenceSetAsFormGroup(index);
+    const companiesGroup = preferenceSet.get('companies') as FormGroup;
+    return Object.values(companiesGroup.value).some(value => value === true) 
+      ? '' : 'Please select at least one company.';
+  }
+  
+  getInfoTypeErrorMessage(index: number): string {
+    const preferenceSet = this.getPreferenceSetAsFormGroup(index);
+    const infoTypesGroup = preferenceSet.get('infoTypes') as FormGroup;
+    return Object.values(infoTypesGroup.value).some(value => value === true) 
+      ? '' : 'Please select at least one information type.';
+  }
+  
+  getDetailsErrorMessage(index: number): string {
+    const preferenceSet = this.getPreferenceSetAsFormGroup(index);
+    const infoTypesGroup = preferenceSet.get('infoTypes') as FormGroup;
+    let errorMessage = '';
+  
+    if (infoTypesGroup.get('Pipeline Info')?.value) {
+      const pipelineDetails = preferenceSet.get('pipelineDetails') as FormGroup;
+      if (!Object.values(pipelineDetails.value).some(value => value === true)) {
+        errorMessage += 'Please select at least one pipeline detail. ';
+      }
+    }
+    if (infoTypesGroup.get('Financial Info')?.value) {
+      const financialDetails = preferenceSet.get('financialDetails') as FormGroup;
+      if (!Object.values(financialDetails.value).some(value => value === true)) {
+        errorMessage += 'Please select at least one financial detail. ';
+      }
+    }
+    if (infoTypesGroup.get('Personnel Info')?.value) {
+      const personnelDetails = preferenceSet.get('personnelDetails') as FormGroup;
+      if (!Object.values(personnelDetails.value).some(value => value === true)) {
+        errorMessage += 'Please select at least one personnel detail. ';
+      }
+    }
+  
+    return errorMessage;
+  }
+
+  isPreferenceSetValid(index: number): boolean {
+    const preferenceSet = this.getPreferenceSetAsFormGroup(index);
+    
+    // Check if at least one category is selected
+    const categoriesGroup = preferenceSet.get('categories') as FormGroup;
+    const hasCategory = Object.values(categoriesGroup.value).some(value => value === true);
+  
+    // Check if at least one company is selected
+    const companiesGroup = preferenceSet.get('companies') as FormGroup;
+    const hasCompany = Object.values(companiesGroup.value).some(value => value === true);
+  
+    // Check if at least one info type is selected
+    const infoTypesGroup = preferenceSet.get('infoTypes') as FormGroup;
+    const hasInfoType = Object.values(infoTypesGroup.value).some(value => value === true);
+  
+    // Check if at least one detail is selected for each selected info type
+    let detailsValid = true;
+    if (infoTypesGroup.get('Pipeline Info')?.value) {
+      const pipelineDetails = preferenceSet.get('pipelineDetails') as FormGroup;
+      detailsValid = detailsValid && Object.values(pipelineDetails.value).some(value => value === true);
+    }
+    if (infoTypesGroup.get('Financial Info')?.value) {
+      const financialDetails = preferenceSet.get('financialDetails') as FormGroup;
+      detailsValid = detailsValid && Object.values(financialDetails.value).some(value => value === true);
+    }
+    if (infoTypesGroup.get('Personnel Info')?.value) {
+      const personnelDetails = preferenceSet.get('personnelDetails') as FormGroup;
+      detailsValid = detailsValid && Object.values(personnelDetails.value).some(value => value === true);
+    }
+  
+    return hasCategory && hasCompany && hasInfoType && detailsValid;
+  }
+
 
   private initializeFilteredPreferenceSets(): void {
     this.filteredPreferenceSets = this.preferenceSets.controls as FormGroup[];
@@ -201,27 +291,27 @@ export class UserConsoleComponent implements OnInit {
     } else {
       // If not editing, start editing
       this.editingStates[index] = true;
-      if (this.originalPreferenceSets[index] === null) {
-        // This is a new preference set, so we don't need to store the original state
-        this.originalPreferenceSets[index] = null;
-      } else {
-        // This is an existing preference set, so store the original state
-        this.originalPreferenceSets[index] = {...this.getPreferenceSetAsFormGroup(index).value};
-      }
+      const currentSet = this.getPreferenceSetAsFormGroup(index);
+      
+      // Create a deep copy of the current state
+      this.originalPreferenceSets[index] = this.deepCopyFormGroup(currentSet);
+      
+      console.log('Original state saved:', this.originalPreferenceSets[index]);
+      
       this.enablePreferenceSet(index);
     }
   }
 
   cancelEdit(index: number): void {
+    console.log('Canceling edit for index:', index);
     const originalSet = this.originalPreferenceSets[index];
     if (originalSet) {
-      // This is an existing preference set
       const currentSet = this.getPreferenceSetAsFormGroup(index);
-      Object.keys(originalSet).forEach(key => {
-        if (key !== 'SetTitle') {
-          currentSet.get(key)?.setValue(originalSet[key]);
-        }
-      });
+      
+      // Restore all values from the original set
+      this.restoreFormGroupValues(currentSet, originalSet);
+  
+      console.log('Restored preference set:', currentSet.value);
     } else {
       // This is a new preference set that hasn't been saved
       this.preferenceSets.removeAt(index);
@@ -233,10 +323,48 @@ export class UserConsoleComponent implements OnInit {
     }
     this.editingStates[index] = false;
     this.disablePreferenceSet(index);
+    console.log('Edit canceled, current state:', this.getPreferenceSetAsFormGroup(index).value);
+  }
+
+  private deepCopyFormGroup(formGroup: FormGroup): any {
+    const copy: any = {};
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      if (control instanceof FormGroup) {
+        copy[key] = this.deepCopyFormGroup(control);
+      } else if (control instanceof FormArray) {
+        copy[key] = control.controls.map(ctrl => 
+          ctrl instanceof FormGroup ? this.deepCopyFormGroup(ctrl) : ctrl.value
+        );
+      } else {
+        copy[key] = control?.value;
+      }
+    });
+    return copy;
+  }
+
+  private restoreFormGroupValues(formGroup: FormGroup, values: any): void {
+    Object.keys(values).forEach(key => {
+      const control = formGroup.get(key);
+      if (control instanceof FormGroup) {
+        this.restoreFormGroupValues(control, values[key]);
+      } else if (control instanceof FormArray) {
+        control.clear();
+        values[key].forEach((item: any) => {
+          if (typeof item === 'object' && !Array.isArray(item)) {
+            control.push(this.fb.group(item));
+          } else {
+            control.push(this.fb.control(item));
+          }
+        });
+      } else {
+        control?.setValue(values[key]);
+      }
+    });
   }
 
   savePreferenceSet(index: number): void {
-    if (this.contactForm.valid) {
+    if (this.contactForm.valid && this.isPreferenceSetValid(index)) {
       const preferenceSet = this.getPreferenceSetAsFormGroup(index).value;
   
       const checkedPreferredContacts = preferenceSet.preferredContacts.filter(
@@ -284,39 +412,55 @@ export class UserConsoleComponent implements OnInit {
           this.snackBar.open('Error updating preference set.', 'Close', { duration: 3000 });
         }
       });
+    } else {
+      this.snackBar.open('Please ensure at least one option is selected in each section.', 'Close', { duration: 3000 });
     }
   
     this.disablePreferredContacts();
   }
 
   deletePreferenceSet(index: number): void {
+    console.log('deletePreferenceSet called with index:', index);
     const preferenceSet = this.getPreferenceSetAsFormGroup(index).value;
-    
-    if (confirm('Are you sure you want to delete this preference set?')) {
-      if (preferenceSet.SetID) {
-        // Existing preference set
-        this.dataService.deleteNotificationPreference(preferenceSet.SetID).subscribe({
-          next: (response) => {
-            console.log('Preference set deleted successfully:', response);
-            this.snackBar.open('Preference set deleted successfully!', 'Close', { duration: 3000 });
-            this.preferenceSets.removeAt(index);
-          },
-          error: (error) => {
-            console.error('Error deleting preference set:', error);
-            this.snackBar.open('Error deleting preference set.', 'Close', { duration: 3000 });
-          }
-        });
-      } else {
-        // New preference set (not yet saved)
-        this.preferenceSets.removeAt(index);
-        this.snackBar.open('Preference set removed.', 'Close', { duration: 3000 });
+    console.log('Preference set to delete:', preferenceSet);
+  
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm Deletion',
+        message: 'Are you sure you want to delete this preference set?'
       }
-    }
-    this.initializeFilteredPreferenceSets();
-    this.searchPreferenceSets(); // Refresh the filtered list
-
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog result:', result);
+      if (result === true) {
+        if (preferenceSet.SetID) {
+          console.log('Calling deleteNotificationPreference with SetID:', preferenceSet.SetID);
+          this.dataService.deleteNotificationPreference(preferenceSet.SetID).subscribe({
+            next: (response) => {
+              console.log('Preference set deleted successfully:', response);
+              this.snackBar.open('Preference set deleted successfully!', 'Close', { duration: 3000 });
+              this.preferenceSets.removeAt(index);
+              this.initializeFilteredPreferenceSets();
+              this.searchPreferenceSets();
+            },
+            error: (error) => {
+              console.error('Error deleting preference set:', error);
+              this.snackBar.open('Error deleting preference set.', 'Close', { duration: 3000 });
+            }
+          });
+        } else {
+          console.log('Removing new preference set (not saved to backend)');
+          this.preferenceSets.removeAt(index);
+          this.snackBar.open('Preference set removed.', 'Close', { duration: 3000 });
+          this.initializeFilteredPreferenceSets();
+          this.searchPreferenceSets();
+        }
+      } else {
+        console.log('Deletion cancelled');
+      }
+    });
   }
-
 
   getPreferenceSetAsFormGroup(index: number): FormGroup {
     return this.preferenceSets.at(index) as FormGroup;
@@ -566,6 +710,7 @@ export class UserConsoleComponent implements OnInit {
 
 
   private disablePreferenceSet(index: number): void {
+    console.log(`Disabling preference set at index ${index}`);
     const preferenceSet = this.getPreferenceSetAsFormGroup(index);
     Object.keys(preferenceSet.controls).forEach(key => {
       if (key !== 'SetTitle') {
@@ -578,9 +723,7 @@ export class UserConsoleComponent implements OnInit {
           control.controls.forEach(arrayControl => {
             if (arrayControl instanceof FormGroup) {
               Object.keys(arrayControl.controls).forEach(subKey => {
-                if (subKey !== 'checked') { // Keep 'checked' enabled for preferred contacts
-                  arrayControl.get(subKey)?.disable();
-                }
+                arrayControl.get(subKey)?.disable();
               });
             } else {
               arrayControl.disable();
@@ -591,8 +734,8 @@ export class UserConsoleComponent implements OnInit {
         }
       }
     });
+    console.log(`Preference set at index ${index} disabled`);
   }
-
 private enablePreferenceSet(index: number): void {
   const preferenceSet = this.getPreferenceSetAsFormGroup(index);
   preferenceSet.enable();
@@ -715,23 +858,25 @@ private fetchAndUpdateCompaniesAfterInitialization(set: any, setIndex: number): 
     // Populate preferred contacts
     this.populatePreferredContacts(newSet);
     
+    const newIndex = this.preferenceSets.length;
     (this.contactForm.get('preferenceSets') as FormArray).push(newSet);
-    this.editingStates.push(true); // Start in editing state
-    this.originalPreferenceSets.push(null);
+    this.editingStates[newIndex] = false; // Start in non-editing state
+    this.originalPreferenceSets[newIndex] = this.deepCopyFormGroup(newSet);
     
-    this.disablePreferenceSet(this.preferenceSets.length - 1);
+    this.disablePreferenceSet(newIndex);
     
     // Trigger category change to populate companies and info types
-    this.onCategoryChange(this.preferenceSets.length - 1);
+    this.onCategoryChange(newIndex);
     
     // Scroll to the newly added preference set
     setTimeout(() => {
-      const newSetElement = document.getElementById(`preference-set-${this.preferenceSets.length - 1}`);
+      const newSetElement = document.getElementById(`preference-set-${newIndex}`);
       if (newSetElement) {
         newSetElement.scrollIntoView({ behavior: 'smooth' });
       }
       this.cdr.detectChanges(); // Trigger change detection
     });
+  
     this.initializeFilteredPreferenceSets();
     this.searchPreferenceSets(); // Refresh the filtered list
   }
@@ -832,10 +977,16 @@ private fetchAndUpdateCompaniesAfterInitialization(set: any, setIndex: number): 
       infoTypes.unshift('Pipeline Info');
     }
   
-    // Remove old controls
+    // Remove old controls and uncheck associated details
     Object.keys(infoTypesGroup.controls)
-      .filter(infoType => !infoTypes.includes(infoType))
-      .forEach(infoType => infoTypesGroup.removeControl(infoType));
+      .forEach(infoType => {
+        if (!infoTypes.includes(infoType)) {
+          infoTypesGroup.removeControl(infoType);
+          this.uncheckAssociatedDetails(preferenceSetGroup, infoType);
+        } else if (!infoTypesGroup.get(infoType)?.value) {
+          this.uncheckAssociatedDetails(preferenceSetGroup, infoType);
+        }
+      });
   
     // Add new controls
     infoTypes.forEach(infoType => {
@@ -847,6 +998,41 @@ private fetchAndUpdateCompaniesAfterInitialization(set: any, setIndex: number): 
     // Update the infoTypeList for this specific preference set
     preferenceSetGroup.setControl('infoTypeList', this.fb.control(infoTypes));
   }
+
+  private uncheckAssociatedDetails(preferenceSetGroup: FormGroup, infoType: string): void {
+    switch (infoType) {
+      case 'Pipeline Info':
+        const pipelineDetails = preferenceSetGroup.get('pipelineDetails') as FormGroup;
+        Object.keys(pipelineDetails.controls).forEach(key => {
+          pipelineDetails.get(key)?.setValue(false);
+        });
+        break;
+      case 'Financial Info':
+        const financialDetails = preferenceSetGroup.get('financialDetails') as FormGroup;
+        Object.keys(financialDetails.controls).forEach(key => {
+          financialDetails.get(key)?.setValue(false);
+        });
+        break;
+      case 'Personnel Info':
+        const personnelDetails = preferenceSetGroup.get('personnelDetails') as FormGroup;
+        Object.keys(personnelDetails.controls).forEach(key => {
+          personnelDetails.get(key)?.setValue(false);
+        });
+        break;
+    }
+  }
+
+  onInfoTypeChange(setIndex: number, infoType: string): void {
+    console.log(`Info type changed for set ${setIndex}: ${infoType}`);
+    const preferenceSetGroup = this.getPreferenceSetAsFormGroup(setIndex);
+    const infoTypesGroup = preferenceSetGroup.get('infoTypes') as FormGroup;
+    
+    if (!infoTypesGroup.get(infoType)?.value) {
+      console.log(`Unchecking details for ${infoType}`);
+      this.uncheckAssociatedDetails(preferenceSetGroup, infoType);
+    }
+  }
+  
 
   selectAllCategories(setIndex: number): void {
     const preferenceSetGroup = this.getPreferenceSetAsFormGroup(setIndex);

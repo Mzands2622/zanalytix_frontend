@@ -7,11 +7,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { TitleCasePipe } from '@angular/common';
-import { AuthService } from '../auth.service';  // Import the AuthService
-import { CommonModule } from '@angular/common';  // Import CommonModule for ngFor
-import { MatOptionModule } from '@angular/material/core';  // Import MatOptionModule for mat-option
-import { Router } from '@angular/router';  // Import the Router
-
+import { AuthService } from '../auth.service';
+import { CommonModule } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -27,19 +26,19 @@ import { Router } from '@angular/router';  // Import the Router
     MatIconModule,
     ReactiveFormsModule,
     TitleCasePipe,
-    
+    RouterModule
   ],
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.css'],
-  providers: [AuthService]  // Make sure AuthService is provided
+  providers: [AuthService]
 })
-
 export class SignupComponent {
   signupForm: FormGroup;
-  errorMessage: string | null = null; // To store the error message
+  errorMessage: string | null = null;
   roles = ['user', 'programmer', 'admin'];
+  hidePassword = true;
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {  // Inject AuthService
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.signupForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],

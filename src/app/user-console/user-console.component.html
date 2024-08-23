@@ -1,4 +1,3 @@
-<div class="scrolling-background"></div>
 <mat-card>
     <mat-card-header>
         <mat-card-title>Manage Your Contact Preferences</mat-card-title>
@@ -107,6 +106,9 @@
                         <mat-checkbox *ngFor="let category of categoryList" [formControlName]="category" (change)="onCategoryChange(i)">
                             {{ category }}
                         </mat-checkbox>
+                        <mat-error *ngIf="editingStates[i] && getCategoryErrorMessage(i)">
+                          {{ getCategoryErrorMessage(i) }}
+                        </mat-error>
                     </div>
                 </div>
           
@@ -119,6 +121,9 @@
                         <mat-checkbox *ngFor="let company of preferenceSet.get('companyList')?.value" [formControlName]="company">
                             {{ company }}
                         </mat-checkbox>
+                        <mat-error *ngIf="editingStates[i] && getCompanyErrorMessage(i)">
+                          {{ getCompanyErrorMessage(i) }}
+                        </mat-error>
                     </div>
                 </div>
             
@@ -128,89 +133,98 @@
                         <button mat-button type="button" (click)="selectAllInfoTypes(i)" [disabled]="!isEditing(i)">Select All</button>
                     </h3>
                     <div formGroupName="infoTypes">
-                        <mat-checkbox *ngFor="let infoType of preferenceSet.get('infoTypeList')?.value" [formControlName]="infoType">
-                            {{ infoType }}
-                        </mat-checkbox>
+                      <mat-checkbox *ngFor="let infoType of preferenceSet.get('infoTypeList')?.value" 
+                      [formControlName]="infoType"
+                      (change)="onInfoTypeChange(i, infoType)">
+            {{ infoType }}
+        </mat-checkbox>
+        <mat-error *ngIf="editingStates[i] && getInfoTypeErrorMessage(i)">
+          {{ getInfoTypeErrorMessage(i) }}
+        </mat-error>
                     </div>
                 </div>    
           
                 <!-- Pipeline Details for the Preference Set -->
                 <div class="details-section" *ngIf="showPipelineDetails(i)">
-                    <h3 class="detail-section-header">Pipeline Details
-                        <button mat-button type="button" (click)="selectAllPipelineDetails(i)" [disabled]="!isEditing(i)">Select All</button>
-                    </h3>
-                    <div formGroupName="pipelineDetails">
-                        <mat-checkbox formControlName="TherapyApproval">Therapy Approval</mat-checkbox>
-                        <mat-checkbox formControlName="IndicationChange">Indication Change</mat-checkbox>
-                    </div>
-                </div>
-          
-                <!-- Financial Details for the Preference Set -->
-                <div class="details-section" *ngIf="showFinancialDetails(i)">
-                    <h3 class="detail-section-header">Financial Details
-                        <button mat-button type="button" (click)="selectAllFinancialDetails(i)" [disabled]="!isEditing(i)">Select All</button>
-                    </h3>
-                    <div formGroupName="financialDetails">
-                        <mat-checkbox formControlName="EarningsReport">Earnings Report</mat-checkbox>
-                        <mat-checkbox formControlName="MAndA">M&A</mat-checkbox>
-                    </div>
-                </div>
-          
-                <!-- Personnel Details for the Preference Set -->
-                <div class="details-section" *ngIf="showPersonnelDetails(i)">
-                    <h3 class="detail-section-header">Personnel Details
-                        <button mat-button type="button" (click)="selectAllPersonnelDetails(i)" [disabled]="!isEditing(i)">Select All</button>
-                    </h3>
-                    <div formGroupName="personnelDetails">
-                        <mat-checkbox formControlName="Layoffs">Layoffs</mat-checkbox>
-                        <mat-checkbox formControlName="NewHires">New Hires</mat-checkbox>
-                    </div>
-                </div>
-
-                <div class="preferences-section">
-                  <h3 class="section-title">Notification Priority</h3>
-                  <mat-form-field appearance="fill">
-                    <mat-label>Notification Priority</mat-label>
-                    <mat-select formControlName="Priority">
-                      <mat-option value="5">Critical Updates</mat-option>
-                      <mat-option value="4">High Priority</mat-option>
-                      <mat-option value="3">Moderate Importance</mat-option>
-                      <mat-option value="2">Low Priority</mat-option>
-                      <mat-option value="1">Minimal Importance</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-
-                <div class="preferences-section">
-                  <h3 class="section-title">Preferred Contacts</h3>
-                  <div formArrayName="preferredContacts">
-                      <mat-checkbox *ngFor="let contact of getPreferredContacts(i).controls; let j = index" 
-                                    [formGroupName]="j"
-                                    [(ngModel)]="contact.value.checked"
-                                    [ngModelOptions]="{standalone: true}"
-                                    (change)="onPreferredContactChange(i, j)"
-                                    [disabled]="!isEditing(i)"> <!-- Bind disabled state here -->
-                          {{ contact.value.contactType }} - {{ contact.value.contactDetail }}
-                      </mat-checkbox>
+                  <h3 class="detail-section-header">Pipeline Details
+                      <button mat-button type="button" (click)="selectAllPipelineDetails(i)" [disabled]="!isEditing(i)">Select All</button>
+                  </h3>
+                  <div formGroupName="pipelineDetails">
+                      <mat-checkbox formControlName="TherapyApproval">Therapy Approval</mat-checkbox>
+                      <mat-checkbox formControlName="IndicationChange">Indication Change</mat-checkbox>
                   </div>
               </div>
-                
-                <div class="action-buttons">
-                  <div class="action-buttons">
-                    <button mat-button color="primary" (click)="editPreferenceSet(i)">
-                        {{ isEditing(i) ? 'Cancel' : 'Edit' }}
-                    </button>
-                    <button mat-button color="accent" (click)="savePreferenceSet(i)" [disabled]="!isEditing(i)">
-                        Save
-                    </button>
-                    <button mat-button color="warn" (click)="deletePreferenceSet(i)">
-                        Delete
-                    </button>
+        
+              <!-- Financial Details for the Preference Set -->
+              <div class="details-section" *ngIf="showFinancialDetails(i)">
+                  <h3 class="detail-section-header">Financial Details
+                      <button mat-button type="button" (click)="selectAllFinancialDetails(i)" [disabled]="!isEditing(i)">Select All</button>
+                  </h3>
+                  <div formGroupName="financialDetails">
+                      <mat-checkbox formControlName="EarningsReport">Earnings Report</mat-checkbox>
+                      <mat-checkbox formControlName="MAndA">M&A</mat-checkbox>
+                  </div>
+              </div>
+        
+              <!-- Personnel Details for the Preference Set -->
+              <div class="details-section" *ngIf="showPersonnelDetails(i)">
+                  <h3 class="detail-section-header">Personnel Details
+                      <button mat-button type="button" (click)="selectAllPersonnelDetails(i)" [disabled]="!isEditing(i)">Select All</button>
+                  </h3>
+                  <div formGroupName="personnelDetails">
+                      <mat-checkbox formControlName="Layoffs">Layoffs</mat-checkbox>
+                      <mat-checkbox formControlName="NewHires">New Hires</mat-checkbox>
+                  </div>
+              </div>
+
+              <!-- Error message for details -->
+              <mat-error *ngIf="editingStates[i] && getDetailsErrorMessage(i)">
+                  {{ getDetailsErrorMessage(i) }}
+              </mat-error>
+
+              <div class="preferences-section">
+                <h3 class="section-title">Notification Priority</h3>
+                <mat-form-field appearance="fill">
+                  <mat-label>Notification Priority</mat-label>
+                  <mat-select formControlName="Priority">
+                    <mat-option value="5">Critical Updates</mat-option>
+                    <mat-option value="4">High Priority</mat-option>
+                    <mat-option value="3">Moderate Importance</mat-option>
+                    <mat-option value="2">Low Priority</mat-option>
+                    <mat-option value="1">Minimal Importance</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+
+              <div class="preferences-section">
+                <h3 class="section-title">Preferred Contacts</h3>
+                <div formArrayName="preferredContacts">
+                    <mat-checkbox *ngFor="let contact of getPreferredContacts(i).controls; let j = index" 
+                                  [formGroupName]="j"
+                                  [(ngModel)]="contact.value.checked"
+                                  [ngModelOptions]="{standalone: true}"
+                                  (change)="onPreferredContactChange(i, j)"
+                                  [disabled]="!isEditing(i)"> <!-- Bind disabled state here -->
+                        {{ contact.value.contactType }} - {{ contact.value.contactDetail }}
+                    </mat-checkbox>
                 </div>
-                </div>
-            </mat-expansion-panel>
-        </mat-accordion>
-        <div class="add-notification-container">
+            </div>              
+              <div class="action-buttons">
+                  <button mat-button color="primary" (click)="editPreferenceSet(i)">
+                      {{ editingStates[i] ? 'Cancel' : 'Edit' }}
+                  </button>
+                  <button mat-button color="accent" 
+                          (click)="savePreferenceSet(i)" 
+                          [disabled]="!editingStates[i] || !isPreferenceSetValid(i)">
+                      Save
+                  </button>
+                  <button mat-button color="warn" (click)="deletePreferenceSet(i)" *ngIf="editingStates[i]">
+                      Delete
+                  </button>
+              </div>
+          </mat-expansion-panel>
+      </mat-accordion>
+      <div class="add-notification-container">
           <button mat-raised-button class="primary-action-button" (click)="addPreferenceSet()">
               Add Notification Object
           </button>
