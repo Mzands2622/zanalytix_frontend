@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DataService } from '../data.service';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';  
 import { RRule, Frequency } from 'rrule';
 
 // Import Angular Material modules
@@ -19,6 +20,11 @@ interface ScrapingObject {
   objectDescription: string;
   objectFrequency: string;
   objectCode: string;
+}
+
+interface Company {
+  companyId: number;
+  companyName: string;
 }
 
 @Component({
@@ -41,9 +47,9 @@ interface ScrapingObject {
 })
 export class ProgrammerConsoleComponent implements OnInit {
   companyForm = new FormGroup({
-    companyId: new FormControl(''),
-    companyName: new FormControl(''),
-    headquartersLocalTime: new FormControl(''),
+    companyId: new FormControl(''),  // Dropdown for selecting the company
+    companyLogo: new FormControl(''),
+    pipelineLink: new FormControl(''),
     categories: new FormControl([]),
     objectDescription: new FormControl(''),
     objectFrequency: new FormControl(''),
@@ -56,13 +62,43 @@ export class ProgrammerConsoleComponent implements OnInit {
   selectedObjectIndex: number | null = null;
 
   categoriesList: string[] = [];
+  companies: Company[] = [];  // List of companies associated with the programmer
+  userId: number | null = null;
+  selectedCompanyName: string | null = null; // Property to hold selected company name
 
-  constructor(private dataService: DataService, private snackBar: MatSnackBar) {}
+
+  constructor(
+    private dataService: DataService, 
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute  
+  ) {}
 
   ngOnInit(): void {
+    const userIdStr = this.route.snapshot.paramMap.get('userId');
+    this.userId = userIdStr ? +userIdStr : null;
+  
+    if (this.userId !== null) {
+      this.loadCompanies();
+    }
+
     this.loadCategories();
   }
-
+  loadCompanies(): void {
+    if (this.userId !== null) {
+        this.dataService.getProgrammerCompanies(this.userId).subscribe({
+            next: (companyNames: string[]) => {
+                console.log('Fetched companies:', companyNames); // Log fetched companies
+                this.companies = companyNames.map((name, index) => ({
+                    companyId: index + 1, // Assuming the index can be used as the ID, or change it according to your logic
+                    companyName: name
+                })) as Company[];
+            },
+            error: (error) => {
+                console.error('Failed to load companies', error);
+            }
+        });
+    }
+}
   loadCategories(): void {
     this.dataService.getCategories().subscribe({
       next: (categories) => {
@@ -71,6 +107,43 @@ export class ProgrammerConsoleComponent implements OnInit {
       error: (error) => {
         console.error('Failed to load categories', error);
       }
+    });
+  }
+
+  onCompanySelect(): void {
+    const selectedCompanyId = this.companyForm.get('companyId')?.value;
+
+    if (selectedCompanyId) {
+        this.dataService.getCompanyDetails(selectedCompanyId).subscribe({
+            next: (companyDetails) => {
+                this.selectedCompanyName = companyDetails.companyName; 
+                this.companyForm.patchValue({
+                    companyLogo: companyDetails.companyLogo,
+                    pipelineLink: companyDetails.pipelineLink,
+                    categories: companyDetails.categories,
+                });
+            },
+            error: (error) => {
+                console.error('Failed to load company details', error);
+            }
+        });
+    }
+}
+
+  saveChanges(): void {
+    const updatedCompanyData = {
+      companyId: this.companyForm.get('companyId')?.value,
+      companyLogo: this.companyForm.get('companyLogo')?.value,
+      pipelineLink: this.companyForm.get('pipelineLink')?.value,
+      categories: this.companyForm.get('categories')?.value,
+    };
+
+    this.dataService.updateCompanyDetails(updatedCompanyData).subscribe({
+      next: (response) => {
+        console.log('Update successful', response);
+        this.snackBar.open('Company details updated successfully!', 'Close', { duration: 3000 });
+      },
+      error: (error) => console.error('Failed to update company details', error)
     });
   }
 
@@ -115,58 +188,51 @@ export class ProgrammerConsoleComponent implements OnInit {
 
   onSubmit(): void {
     if (this.companyForm.valid) {
-      const formValue = this.companyForm.value;
-      const rruleString = this.constructRRule(formValue);
-      const scrapingObject: ScrapingObject = {
-        objectDescription: formValue.objectDescription ?? "",
-        objectFrequency: rruleString,
-        objectCode: formValue.objectCode ?? ""
-      };
+        const formValue = this.companyForm.value;
+        const rruleString = this.constructRRule(formValue);
+        const scrapingObject: ScrapingObject = {
+            objectDescription: formValue.objectDescription ?? "",
+            objectFrequency: rruleString,
+            objectCode: formValue.objectCode ?? ""
+        };
 
-      if (this.selectedObjectIndex !== null) {
-        // Update existing object
-        this.scrapingObjects[this.selectedObjectIndex] = scrapingObject;
-
-        if (formValue.companyId && scrapingObject.objectCode) {
-          this.dataService.updateScrapingObject(formValue.companyId, scrapingObject.objectCode, {
+        const payload = {
             companyId: formValue.companyId,
-            companyName: formValue.companyName,
-            headquartersLocalTime: formValue.headquartersLocalTime,
             scrapingObject: scrapingObject,
-            categories: formValue.categories
-          }).subscribe({
-            next: (response) => {
-              console.log('Update successful', response);
-              this.snackBar.open('Object updated successfully!', 'Close', { duration: 3000 });
-            },
-            error: (error) => console.error('Failed to update data', error)
-          });
-        } else {
-          console.error('Company ID or Object Code is missing');
-        }
+            categories: formValue.categories,
+            companyName: this.selectedCompanyName,
+            companyLogo: formValue.companyLogo,
+            pipelineLink: formValue.pipelineLink
+        };
 
-        this.selectedObjectIndex = null;
-      } else {
-        // Add new object
-        this.scrapingObjects.push(scrapingObject);
-        this.dataService.submitScrapingObject({
-          companyId: formValue.companyId,
-          companyName: formValue.companyName,
-          headquartersLocalTime: formValue.headquartersLocalTime,
-          scrapingObject: scrapingObject,
-          categories: formValue.categories
-        }).subscribe({
-          next: (response) => {
-            console.log('Submission successful', response);
-            this.snackBar.open('Object saved successfully!', 'Close', { duration: 3000 });
-          },
-          error: (error) => console.error('Failed to submit data', error)
-        });
-      }
+        console.log('Payload to be sent:', payload);
+
+        if (this.selectedObjectIndex !== null) {
+            this.scrapingObjects[this.selectedObjectIndex] = scrapingObject;
+            this.dataService.updateScrapingObject(formValue.companyId ?? '', scrapingObject.objectCode, payload).subscribe({
+                next: (response) => {
+                    console.log('Update successful', response);
+                    this.snackBar.open('Object updated successfully!', 'Close', { duration: 3000 });
+                },
+                error: (error) => console.error('Failed to update data', error)
+            });
+
+            this.selectedObjectIndex = null;
+        } else {
+            this.scrapingObjects.push(scrapingObject);
+            this.dataService.submitScrapingObject(payload).subscribe({
+                next: (response) => {
+                    console.log('Submission successful', response);
+                    this.snackBar.open('Object saved successfully!', 'Close', { duration: 3000 });
+                },
+                error: (error) => console.error('Failed to submit data', error)
+            });
+        }
     } else {
-      console.error('Form is not valid');
+        console.error('Form is not valid');
     }
-  }
+}
+
 
   deleteObject(companyId: string, objectCode: string): void {
     this.scrapingObjects = this.scrapingObjects.filter(obj => obj.objectCode !== objectCode);
@@ -182,8 +248,6 @@ export class ProgrammerConsoleComponent implements OnInit {
   cancelEdit(): void {
     this.companyForm.reset({
       companyId: this.companyForm.value.companyId,
-      companyName: this.companyForm.value.companyName,
-      headquartersLocalTime: this.companyForm.value.headquartersLocalTime
     });
     this.companyForm.patchValue({
       objectDescription: '',

@@ -3,9 +3,9 @@
     <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu">
       <mat-icon>apps</mat-icon>
     </button>
-  </div>
+</div>
 
-  <mat-menu #menu="matMenu">
+<mat-menu #menu="matMenu">
     <button mat-menu-item>
       <mat-icon>home</mat-icon>
       <span>Home</span>
@@ -18,24 +18,28 @@
       <mat-icon>info</mat-icon>
       <span>About</span>
     </button>
-  </mat-menu>
+</mat-menu>
   
 <form [formGroup]="companyForm" (ngSubmit)="onSubmit()">
     <div class="section">
         <h2>Company Details</h2>
+
+        <!-- Company Selection Dropdown -->
         <mat-form-field appearance="fill">
-            <mat-label>Company ID</mat-label>
-            <input matInput id="companyId" type="text" formControlName="companyId">
+            <mat-label>Select Company</mat-label>
+            <mat-select formControlName="companyId" (selectionChange)="onCompanySelect()">
+              <mat-option *ngFor="let company of companies" [value]="company.companyId">{{ company.companyName }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        
+        <mat-form-field appearance="fill">
+            <mat-label>Company Logo URL</mat-label>
+            <input matInput id="companyLogo" type="text" formControlName="companyLogo">
         </mat-form-field>
-  
+
         <mat-form-field appearance="fill">
-            <mat-label>Company Name</mat-label>
-            <input matInput id="companyName" type="text" formControlName="companyName">
-        </mat-form-field>
-  
-        <mat-form-field appearance="fill">
-            <mat-label>Headquarters Local Time</mat-label>
-            <input matInput id="headquartersLocalTime" type="text" formControlName="headquartersLocalTime">
+            <mat-label>Pipeline Link</mat-label>
+            <input matInput id="pipelineLink" type="text" formControlName="pipelineLink">
         </mat-form-field>
 
         <!-- Category Selection -->
