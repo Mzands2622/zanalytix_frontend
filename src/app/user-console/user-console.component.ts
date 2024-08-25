@@ -27,10 +27,6 @@ import { Router } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
 
 
-
-
-
-
 @Component({
   selector: 'app-user-console',
   templateUrl: './user-console.component.html',

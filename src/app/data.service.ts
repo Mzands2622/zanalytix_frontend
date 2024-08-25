@@ -18,6 +18,26 @@ export interface Programmer {
   companyList: string[];
 }
 
+interface Company {
+  companyId: number;
+  companyName: string;
+}
+
+interface CompanyDetails {
+  companyName: string;
+  companyLogo: string;
+  pipelineLink: string;
+  categories: string[];
+  scrapingObjects: ScrapingObject[];
+}
+
+interface ScrapingObject {
+  objectDescription: string;
+  objectFrequency: string;
+  objectCode: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -127,14 +147,16 @@ export class DataService {
     );
   }
 
-  // New methods for company details section logic
-  getProgrammerCompanies(userId: number): Observable<string[]> {
-    return this.http.get<string[]>(`${this.apiUrl}api/programmer-companies/${userId}`);
+  getProgrammerCompanies(userId: number): Observable<Company[]> {
+    return this.http.get<Company[]>(`${this.apiUrl}api/programmer-companies/${userId}`).pipe(
+      catchError(this.handleError<Company[]>('getProgrammerCompanies', []))
+    );
   }
 
-  getCompanyDetails(companyName: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}api/company-details/${companyName}`).pipe(
-      catchError(this.handleError<any>('getCompanyDetails'))
+  // Updated method to get company details by ID
+  getCompanyDetails(companyId: string): Observable<CompanyDetails> {
+    return this.http.get<CompanyDetails>(`${this.apiUrl}api/company-details/${companyId}`).pipe(
+      catchError(this.handleError<CompanyDetails>('getCompanyDetails'))
     );
   }
 
