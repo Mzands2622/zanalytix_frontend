@@ -2,10 +2,20 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
-interface Company {
-  companyId: string;
-  companyName: string;
+
+// interface Company {
+//   companyId: string;
+//   companyName: string;
+// }
+
+export interface Programmer {
+  userId: number;
+  programmerId: number;
+  firstName: string;
+  lastName: string;
+  companyList: string[];
 }
 
 @Injectable({
@@ -142,4 +152,43 @@ export class DataService {
       return of(result as T);
     };
   }
+
+  getProgrammers(): Observable<Programmer[]> {
+    return this.http.get<Programmer[]>(`${this.apiUrl}api/get-programmers`).pipe(
+      map(programmers => programmers.map(p => ({
+        ...p,
+        userId: +p.userId, // Ensure userId is a number
+        companyList: p.companyList || [] // Ensure companyList is always an array
+      })))
+    );
+  }
+
+  updateProgrammerCompanies(userId: number, companyList: string[]): Observable<any> {
+    return this.http.post(`${this.apiUrl}api/update-programmer-companies/${userId}`, { companyList }, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  getProgrammerContacts(userId: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}api/programmerContacts/${userId}`).pipe(
+      catchError(this.handleError<any>('getProgrammerContacts'))
+    );
+  }
+  
+  saveProgrammerContacts(userId: number, contactData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}api/programmerContacts/${userId}`, contactData, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError<any>('saveProgrammerContacts'))
+    );
+  }
+
+  addCompany(companyData: { companyName: string; headquartersLocalTime: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}api/add-company`, companyData, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError<any>('addCompany'))
+    );
+  }
+
 }

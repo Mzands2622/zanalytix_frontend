@@ -6,17 +6,17 @@
 </div>
 
 <mat-menu #menu="matMenu">
-    <button mat-menu-item>
-      <mat-icon>home</mat-icon>
-      <span>Home</span>
+    <button mat-menu-item [routerLink]="['/programmer-console', userId]">
+        <mat-icon>home</mat-icon>
+        <span>Main Console</span>
     </button>
-    <button mat-menu-item>
-      <mat-icon>settings</mat-icon>
-      <span>Settings</span>
+    <button mat-menu-item [routerLink]="['/programmer-contact', userId]">
+        <mat-icon>contacts</mat-icon>
+        <span>Contact Preferences</span>
     </button>
-    <button mat-menu-item>
-      <mat-icon>info</mat-icon>
-      <span>About</span>
+    <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        <span>Logout</span>
     </button>
 </mat-menu>
   

@@ -15,6 +15,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
+
+
+
+
 
 interface ScrapingObject {
   objectDescription: string;
@@ -41,7 +48,9 @@ interface Company {
     MatCardModule,
     MatMenuModule,
     MatIconModule,        
-    MatListModule         
+    MatListModule,
+    MatSidenavModule,
+    RouterModule         
   ],
   standalone: true
 })
@@ -70,7 +79,9 @@ export class ProgrammerConsoleComponent implements OnInit {
   constructor(
     private dataService: DataService, 
     private snackBar: MatSnackBar,
-    private route: ActivatedRoute  
+    private route: ActivatedRoute,
+    private router: Router
+  
   ) {}
 
   ngOnInit(): void {
@@ -122,6 +133,13 @@ export class ProgrammerConsoleComponent implements OnInit {
                     pipelineLink: companyDetails.pipelineLink,
                     categories: companyDetails.categories,
                 });
+
+                // Assuming your backend also sends the Scraping_Objects
+                if (companyDetails.scrapingObjects) {
+                    this.scrapingObjects = companyDetails.scrapingObjects;
+                } else {
+                    this.scrapingObjects = []; // Clear if no objects are found
+                }
             },
             error: (error) => {
                 console.error('Failed to load company details', error);
@@ -256,5 +274,11 @@ export class ProgrammerConsoleComponent implements OnInit {
       objectCode: ''
     });
     this.selectedObjectIndex = null;
+  }
+
+  logout(): void {
+    // Clear any stored user data (if applicable)
+    // Redirect to the login page
+    this.router.navigate(['/login']);
   }
 }

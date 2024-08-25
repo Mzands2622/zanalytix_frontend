@@ -23,6 +23,10 @@ import { AbstractControl } from '@angular/forms';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component'; // Adjust the path as needed
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu';
+
+
 
 
 
@@ -47,7 +51,8 @@ import { MatDialog } from '@angular/material/dialog';
     MatSlideToggleModule,
     MatExpansionModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatMenuModule
   ],
 })
 export class UserConsoleComponent implements OnInit {
@@ -78,7 +83,9 @@ export class UserConsoleComponent implements OnInit {
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private dialog: MatDialog  // Inject MatDialog here
+    private dialog: MatDialog,  // Inject MatDialog here
+    private router: Router
+
   ) {
     this.contactForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -708,7 +715,6 @@ export class UserConsoleComponent implements OnInit {
   }
 
 
-
   private disablePreferenceSet(index: number): void {
     console.log(`Disabling preference set at index ${index}`);
     const preferenceSet = this.getPreferenceSetAsFormGroup(index);
@@ -734,8 +740,18 @@ export class UserConsoleComponent implements OnInit {
         }
       }
     });
+  
+    // Explicitly disable company controls
+    const companiesGroup = preferenceSet.get('companies') as FormGroup;
+    if (companiesGroup) {
+      Object.keys(companiesGroup.controls).forEach(company => {
+        companiesGroup.get(company)?.disable();
+      });
+    }
+  
     console.log(`Preference set at index ${index} disabled`);
   }
+
 private enablePreferenceSet(index: number): void {
   const preferenceSet = this.getPreferenceSetAsFormGroup(index);
   preferenceSet.enable();
@@ -1261,6 +1277,12 @@ onSubmitNotificationPreferences(): void {
   } else {
       console.error('Form is invalid');
   }
+}
+
+logout(): void {
+  // Clear any stored user data (if applicable)
+  // Redirect to the login page
+  this.router.navigate(['/login']);
 }
 
 }

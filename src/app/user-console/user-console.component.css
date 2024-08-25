@@ -1,115 +1,148 @@
-
-/* Adjusted :host styles */
 :host {
     display: block;
     min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100vw;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 20px;
-    box-sizing: border-box;
+    color: white;
+    font-family: 'Roboto', sans-serif;
   }
 
-/* Existing card styling */
-mat-card {
+  /* Banner Styling */
+  .banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    background-color: rgba(102, 126, 234, 0.9);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    border-radius: 0 0 8px 8px;
+    color: white;
+  }
+  
+  .banner-title {
+    color: white;
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .menu-button {
+    color: white;
+    margin-right: 10px;
+  }
+  
+  .menu-button mat-icon {
+    font-size: 1.8rem;
+  }
+  
+  /* Card Styling */
+  mat-card {
     padding: 32px;
-    background-color: white;
+    background-color: #f3f4f6; /* Background color for the card */
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    max-width: 1300px;
-    margin: 30px auto;
+    max-width: 700px; /* Adjusted width to make the card narrower */
+    margin: 120px auto 30px auto; /* Top margin adjusted to account for the fixed banner */
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     position: relative;
     z-index: 2;
-}
-
-
-
-mat-card:hover {
+    margin-top: 20px;
+  }
+  
+  mat-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-}
-
-/* Card header */
-mat-card-header {
+  }
+  
+  /* Card header */
+  mat-card-header {
     margin-bottom: 40px;
     text-align: center;
-}
-
-/* Title styling */
-mat-card-title {
+  }
+  
+  /* Title styling */
+  mat-card-title {
     font-size: 24px;
     font-weight: bold;
     color: #1976d2;
     text-transform: uppercase;
     letter-spacing: 1px;
-}
-
-/* Form fields */
-.mat-form-field {
+  }
+  
+  /* Form fields */
+  .mat-form-field {
     width: 100%;
     margin-bottom: 20px;
-}
-
-/* First and last name fields */
-.name-fields {
+  }
+  
+  /* First and last name fields */
+  .name-fields {
     display: flex;
     justify-content: center;
     gap: 24px;
-}
-
-@media (max-width: 768px) {
+  }
+  
+  @media (max-width: 768px) {
     .name-fields {
-        flex-direction: column;
-        align-items: center;
+      flex-direction: column;
+      align-items: center;
     }
-}
-
-/* Contact row styling */
-.contact-row {
+  }
+  
+  /* Contact row styling */
+  .contact-row {
     display: flex;
     gap: 20px;
     align-items: center;
     margin-bottom: 14px;
-}
-
-/* Divider styling */
-mat-divider {
+  }
+  
+  /* Divider styling */
+  mat-divider {
     margin: 32px 0;
     border-width: 0.5px;
     border-color: #bdbdbd;
     border-style: solid;
-}
-
-/* Buttons row */
-.buttons-row {
+  }
+  
+  /* Buttons row */
+  .buttons-row {
     display: flex;
     justify-content: space-between;
     margin-top: 40px;
-}
-
-@media (max-width: 768px) {
+  }
+  
+  @media (max-width: 768px) {
     .buttons-row {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
-}
-
-/* Add Contact button */
-.add-contact-button {
+  }
+  
+  /* Add Contact button */
+  .add-contact-button {
     color: #1976d2;
     font-weight: bold;
     text-transform: uppercase;
     cursor: pointer;
     transition: color 0.3s ease-in-out;
-}
-
-.add-contact-button:hover {
+  }
+  
+  .add-contact-button:hover {
     color: #115293;
     text-decoration: underline;
-}
-
-/* Save Preferences button */
-.save-preferences-button {
+  }
+  
+  /* Save Preferences button */
+  .save-preferences-button {
     background-color: #1976d2;
     color: white;
     font-weight: bold;
@@ -117,45 +150,45 @@ mat-divider {
     border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
-}
-
-.save-preferences-button:hover {
+  }
+  
+  .save-preferences-button:hover {
     background-color: #115293;
-}
-
-/* General input styling */
-input, mat-select {
+  }
+  
+  /* General input styling */
+  input, mat-select {
     border-radius: 6px;
-}
-
-.mat-form-field-appearance-fill .mat-form-field-flex {
+  }
+  
+  .mat-form-field-appearance-fill .mat-form-field-flex {
     background-color: #fafafa;
-}
-
-.mat-select-placeholder {
+  }
+  
+  .mat-select-placeholder {
     color: #9e9e9e;
-}
-
-.mat-select-arrow {
+  }
+  
+  .mat-select-arrow {
     color: #1976d2;
-}
-
-/* Section title and select-all button alignment */
-.section-header {
+  }
+  
+  /* Section title and select-all button alignment */
+  .section-header {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     margin-bottom: 8px;
-}
-
-.section-title {
+  }
+  
+  .section-title {
     font-size: 1.3em;
     font-weight: 500;
     margin-right: 10px;
-}
-
-/* Preference button styling */
-.preference-button {
+  }
+  
+  /* Preference button styling */
+  .preference-button {
     border-radius: 20px;
     margin: 3px;
     padding: 6px 12px;
@@ -164,16 +197,16 @@ input, mat-select {
     border: 1px solid transparent;
     font-size: 0.9em;
     transition: background-color 0.3s ease-in-out;
-}
-
-.preference-button.selected {
+  }
+  
+  .preference-button.selected {
     background-color: #007bff;
     color: white;
     border: 1px solid #007bff;
-}
-
-/* Select All button styling */
-.select-all-button {
+  }
+  
+  /* Select All button styling */
+  .select-all-button {
     font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
@@ -184,42 +217,42 @@ input, mat-select {
     cursor: pointer;
     border: 1px solid #1976d2;
     transition: background-color 0.3s ease-in-out;
-}
-
-.select-all-button:hover {
+  }
+  
+  .select-all-button:hover {
     background-color: #b3e5fc;
-}
-
-/* Details section header styling */
-.detail-section-header {
+  }
+  
+  /* Details section header styling */
+  .detail-section-header {
     font-size: 1.3em;
     font-weight: 500;
     margin-right: 10px;
-}
-
-/* Action buttons styling */
-.action-buttons {
+  }
+  
+  /* Action buttons styling */
+  .action-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-}
-
-@media (max-width: 768px) {
+  }
+  
+  @media (max-width: 768px) {
     .action-buttons {
-        flex-direction: column;
-        gap: 10px;
+      flex-direction: column;
+      gap: 10px;
     }
-}
-
-/* Add Notification Button */
-.add-notification-container {
+  }
+  
+  /* Add Notification Button */
+  .add-notification-container {
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;
     margin-bottom: 30px;
-}
-
-.add-notification-button {
+  }
+  
+  .add-notification-button {
     background-color: #1976d2;
     color: white;
     font-weight: bold;
@@ -227,21 +260,22 @@ input, mat-select {
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out;
-}
-
-.add-notification-button:hover {
+  }
+  
+  .add-notification-button:hover {
     background-color: #115293;
-}
-
-/* Search field adjustments */
-.search-field {
+  }
+  
+  /* Search field adjustments */
+  .search-field {
     width: 100%;
     max-width: 250px;
     float: right;
     margin-bottom: 10px;
     margin-left: auto;
-}
-
-.preferences-content {
+  }
+  
+  .preferences-content {
     clear: both;
-}
+  }
+  

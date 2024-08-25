@@ -1,0 +1,82 @@
+<div class="banner">
+    <h1 class="banner-title">Programmer Contact Manager</h1>
+    <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu">
+        <mat-icon>apps</mat-icon>
+    </button>
+</div>
+
+<mat-menu #menu="matMenu">
+    <button mat-menu-item [routerLink]="['/programmer-console', userId]">
+        <mat-icon>home</mat-icon>
+        <span>Main Console</span>
+    </button>
+    <button mat-menu-item [routerLink]="['/programmer-contact', userId]">
+        <mat-icon>contact_mail</mat-icon>
+        <span>Contact Preferences</span>
+    </button>
+</mat-menu>
+
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>Manage Your Contact Preferences</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="contact-form">
+            <!-- First Name and Last Name Fields -->
+            <div class="name-fields">
+                <mat-form-field appearance="fill">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName">
+                </mat-form-field>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName">
+                </mat-form-field>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Contact Information Section -->
+            <div formArrayName="contacts">
+                <div *ngFor="let contact of contacts.controls; let i = index" [formGroupName]="i" class="contact-row">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Contact Type</mat-label>
+                        <mat-select formControlName="type">
+                            <mat-option value="email">Email</mat-option>
+                            <mat-option value="text">Text Number</mat-option>
+                            <mat-option value="call">Call Number</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Contact Detail</mat-label>
+                        <input matInput formControlName="detail">
+                    </mat-form-field>
+
+                    <button mat-icon-button color="warn" type="button" (click)="removeContact(i)" [disabled]="!editingContactInfo">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </div>
+            </div>
+
+            <div class="buttons-row">
+                <button mat-button color="primary" type="button" (click)="addContact()" [disabled]="!editingContactInfo">
+                    + Add Contact
+                </button>
+                
+                <button mat-button color="primary" type="button" (click)="toggleContactEditMode()">
+                    {{ editingContactInfo ? 'Cancel' : 'Edit' }}
+                </button>
+            
+                <button mat-raised-button color="primary" type="submit" 
+                [disabled]="contactForm.invalid || !editingContactInfo" 
+                *ngIf="editingContactInfo">
+                Save Contact Preferences
+                </button>
+            </div>
+            
+        </form>
+    </mat-card-content>
+</mat-card>
