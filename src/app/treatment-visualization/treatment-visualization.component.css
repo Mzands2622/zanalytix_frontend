@@ -1,0 +1,352 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    background-size: 100% 100vh; /* Ensures the gradient covers exactly the viewport height */
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+
+.banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 100vw;
+    background-color: rgba(102, 126, 234, 0.9);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    color: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+}
+
+.banner-title {
+    color: white;
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.menu-button {
+    color: white;
+    margin-right: 10px;
+}
+
+.menu-button mat-icon {
+    font-size: 1.8rem;
+}
+
+.search-container {
+    position: sticky;
+    top: 60px;
+    z-index: 1000;
+    padding: 20px 30px 15px;
+    margin-top: 80px; /* Increase this value to move the search section down */
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.search-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 5px; /* Reduced margin */
+    width: 100%;
+    max-width: 800px;
+}
+
+
+.mat-form-field {
+    width: 200px;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+}
+
+button:hover {
+    background-color: #3a7bd5;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+.phase-section {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.phase-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.phase-container {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+    padding: 0 20px;
+    flex-grow: 1;
+    overflow-x: auto;
+    overflow-y: visible;
+    flex-wrap: nowrap;
+    width: auto;
+    min-width: 100%;
+    margin-top: -10px; /* Add some top margin to prevent immediate expansion to the top */
+}
+
+.phase-container::before,
+.phase-container::after {
+    content: '';
+    flex: 0 0 40px; /* Adjust this value to control how much extra space you want */
+    height: 1px; /* This ensures it doesn't affect vertical layout */
+}
+
+
+.phase-column {
+    flex: 0 0 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    max-height: none; /* Remove max-height restriction */
+    overflow-y: visible; /* Allow vertical overflow */
+    padding: 20px 15px;
+    gap: 20px;
+}
+
+.phase-column:last-child {
+    padding-bottom: 100px;
+}
+
+.treatment-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    margin: 16px auto;
+    width: 90%;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.treatment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 16px;
+    color: white;
+}
+
+.treatment-card .mat-card-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: white;
+}
+
+.treatment-card .mat-card-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0;
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.treatment-card .card-detail {
+    font-size: 0.95rem;
+    color: #333;
+    margin: 8px 0;
+    line-height: 1.4;
+    display: flex;
+    align-items: baseline;
+}
+
+.treatment-card .card-detail strong {
+    font-weight: 600;
+    color: #0056b3;
+    margin-right: 8px;
+    min-width: 80px;
+}
+
+.treatment-card::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #0056b3, #00a0e9);
+}
+.phase-column::-webkit-scrollbar {
+    width: 8px;
+}
+
+.phase-column::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.phase-column::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+.phase-column::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-to-top:hover {
+    background-color: #3a7bd5;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.centered-text {
+    text-align: center;
+    display: block;
+    width: 100%;
+}
+
+.phase-card {
+    display: flex;
+    padding: 0;
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+}
+
+.centered-phase-title {
+    margin: 0;
+    padding: 10px 0 0 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+#SearchButton { 
+    margin-top: 5px; /* Reduced margin */
+    align-self: center;
+}
+
+
+mat-sidenav-container, mat-sidenav-content, mat-sidenav {
+    padding: 0;
+    margin: 0;
+}
+
+.main-content {
+    padding-top: 120px; /* Adjust this value as needed */
+    overflow-y: visible;
+    flex-grow: 1; /* Ensures main content takes up available space */
+    display: flex;
+    flex-direction: column;
+}
+
+@media (max-width: 1200px) {
+    .phase-container {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .phase-column {
+        flex: 0 0 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .mat-form-field {
+        width: 100%;
+    }
+
+    .search-container {
+        top: 50px;
+    }
+
+    .main-content {
+        padding-top: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-container {
+        top: 60px; /* Adjust based on your banner height */
+        padding-top: 20px; /* Less padding on mobile */
+    }
+
+    .main-content {
+        padding-top: 120px; /* Adjust for mobile */
+    }
+}

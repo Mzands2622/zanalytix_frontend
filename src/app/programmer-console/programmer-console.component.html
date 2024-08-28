@@ -24,13 +24,12 @@
     <div class="section">
         <h2>Company Details</h2>
 
-        <!-- Company Selection Dropdown -->
         <mat-form-field appearance="fill">
             <mat-label>Select Company</mat-label>
             <mat-select formControlName="companyId" (selectionChange)="onCompanySelect()">
               <mat-option *ngFor="let company of companies" [value]="company.companyId">{{ company.companyName }}</mat-option>
             </mat-select>
-          </mat-form-field>
+        </mat-form-field>
         
         <mat-form-field appearance="fill">
             <mat-label>Company Logo URL</mat-label>
@@ -42,7 +41,6 @@
             <input matInput id="pipelineLink" type="text" formControlName="pipelineLink">
         </mat-form-field>
 
-        <!-- Category Selection -->
         <mat-form-field appearance="fill">
             <mat-label>Categories</mat-label>
             <mat-select formControlName="categories" multiple>
@@ -87,10 +85,14 @@
                 </mat-form-field>
             </div>
         </div>
+        <mat-error *ngIf="isScrapingObjectPartiallyFilled()">
+            Please fill all fields for the scraping object or clear all fields
+        </mat-error>
     </div>
   
-    <button mat-raised-button color="primary" type="submit" class="save-button">{{ selectedObjectIndex !== null ? 'Update' : 'Save' }}</button>
-    <button mat-button type="button" (click)="cancelEdit()" *ngIf="selectedObjectIndex !== null" class="cancel-button">Cancel</button>
+    <button mat-raised-button color="primary" type="submit" class="save-button">
+        {{ selectedObjectIndex !== null ? 'Update' : 'Save' }}
+    </button>
 </form>
 
 <div *ngIf="scrapingObjects.length > 0" class="submitted-objects">
@@ -101,12 +103,19 @@
             <div class="object-part">{{ object.objectFrequency }}</div>
             <div class="object-part">{{ object.objectCode }}</div>
             <div class="object-part">
-                <button mat-icon-button color="primary" (click)="editObject(i)" class="edit-button">
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="deleteObject(companyForm.get('companyId')?.value ?? '', object.objectCode)" class="delete-button">
-                    <mat-icon>delete</mat-icon>
-                </button>
+                <ng-container *ngIf="selectedObjectIndex !== i; else editMode">
+                    <button mat-icon-button color="primary" (click)="editObject(i)" class="edit-button">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteObject(companyForm.get('companyId')?.value ?? '', object.objectCode)" class="delete-button">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                </ng-container>
+                <ng-template #editMode>
+                    <button mat-icon-button color="warn" (click)="cancelEdit()" class="cancel-button">
+                        <mat-icon>cancel</mat-icon>
+                    </button>
+                </ng-template>
             </div>
         </li>
     </ul>

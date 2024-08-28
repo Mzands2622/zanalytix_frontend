@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
+import { HttpParams } from '@angular/common/http';
+
 
 
 // interface Company {
@@ -100,7 +102,7 @@ export class DataService {
   }
 
   deleteNotificationPreference(setId: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/delete-notification-preference/${setId}`).pipe(
+    return this.http.delete<any>(`${this.apiUrl}delete-notification-preference/${setId}`).pipe(
       catchError(this.handleError<any>('deleteNotificationPreference'))
     );
   }
@@ -160,12 +162,8 @@ export class DataService {
     );
   }
 
-  updateCompanyDetails(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}api/update-company-details`, data, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      catchError(this.handleError<any>('updateCompanyDetails'))
-    );
+  updateCompanyDetails(companyData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}update-company-details`, companyData);
   }
 
   private handleError<T>(operation = 'operation', result?: T) {
@@ -212,5 +210,22 @@ export class DataService {
       catchError(this.handleError<any>('addCompany'))
     );
   }
+
+  updatePreferenceSetTitle(setId: number, newTitle: string): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/update-preference-set-title/${setId}`, { SetTitle: newTitle });
+  }
+
+  getTreatments(searchTerm: string, searchBy: string, selectedCompanies: string[]): Observable<any> {
+    let params = new HttpParams()
+      .set('searchTerm', searchTerm)
+      .set('searchBy', searchBy)
+      .set('companies', selectedCompanies.join(','));
+  
+    return this.http.get<any>(`${this.apiUrl}api/treatments/search`, { params }).pipe(
+      catchError(this.handleError<any>('getTreatments'))
+    );
+  }
+
+
 
 }

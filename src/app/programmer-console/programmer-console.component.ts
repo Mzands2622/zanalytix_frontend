@@ -128,6 +128,20 @@ export class ProgrammerConsoleComponent implements OnInit {
     const selectedCompanyId = this.companyForm.get('companyId')?.value;
     console.log('Selected company ID:', selectedCompanyId);
   
+    // Cancel any ongoing edits
+    this.selectedObjectIndex = null;
+  
+    // Reset scraping object fields
+    this.companyForm.patchValue({
+      objectDescription: '',
+      objectFrequency: '',
+      customCron: '',
+      objectCode: ''
+    });
+  
+    // Reset custom cron visibility
+    this.customCronVisible = false;
+  
     if (selectedCompanyId) {
       const selectedCompany = this.companies.find(c => c.companyId === +selectedCompanyId);
       if (selectedCompany) {
@@ -142,7 +156,7 @@ export class ProgrammerConsoleComponent implements OnInit {
                 pipelineLink: companyDetails.pipelineLink || '',
                 categories: companyDetails.categories || [],
               });
-      
+        
               this.scrapingObjects = companyDetails.scrapingObjects || [];
             } else {
               console.error('Received invalid company details:', companyDetails);
@@ -223,56 +237,109 @@ export class ProgrammerConsoleComponent implements OnInit {
   onSubmit(): void {
     if (this.companyForm.valid) {
       const formValue = this.companyForm.value;
-      const rruleString = this.constructRRule(formValue);
-      const scrapingObject: ScrapingObject = {
-        objectDescription: formValue.objectDescription ?? "",
-        objectFrequency: rruleString,
-        objectCode: formValue.objectCode ?? ""
-      };
-
-      const payload = {
-        companyId: formValue.companyId,
-        scrapingObject: scrapingObject,
-        categories: formValue.categories,
-        companyName: this.selectedCompanyName,
-        companyLogo: formValue.companyLogo,
-        pipelineLink: formValue.pipelineLink
-      };
-
-      console.log('Payload to be sent:', payload);
-
-      if (this.selectedObjectIndex !== null) {
-        this.scrapingObjects[this.selectedObjectIndex] = scrapingObject;
-        this.dataService.updateScrapingObject(formValue.companyId ?? '', scrapingObject.objectCode, payload).subscribe({
-          next: (response) => {
-            console.log('Update successful', response);
-            this.snackBar.open('Object updated successfully!', 'Close', { duration: 3000 });
-          },
-          error: (error) => {
-            console.error('Failed to update data', error);
-            this.snackBar.open('Failed to update object', 'Close', { duration: 3000 });
-          }
-        });
-
-        this.selectedObjectIndex = null;
-      } else {
-        this.scrapingObjects.push(scrapingObject);
-        this.dataService.submitScrapingObject(payload).subscribe({
-          next: (response) => {
-            console.log('Submission successful', response);
-            this.snackBar.open('Object saved successfully!', 'Close', { duration: 3000 });
-          },
-          error: (error) => {
-            console.error('Failed to submit data', error);
-            this.snackBar.open('Failed to save object', 'Close', { duration: 3000 });
-          }
-        });
+      
+      if (this.isScrapingObjectPartiallyFilled()) {
+        this.snackBar.open('Please fill all fields for the scraping object or clear all fields', 'Close', { duration: 5000 });
+        return;
       }
+  
+      const updatedCompanyData = {
+        companyId: formValue.companyId,
+        companyLogo: formValue.companyLogo,
+        pipelineLink: formValue.pipelineLink,
+        categories: formValue.categories,
+      };
+  
+      this.dataService.updateCompanyDetails(updatedCompanyData).subscribe({
+        next: (response) => {
+          console.log('Company details update successful', response);
+          
+          if (formValue.objectDescription && formValue.objectFrequency && formValue.objectCode) {
+            this.processScrapingObject(formValue);
+          } else {
+            this.snackBar.open('Company details updated successfully!', 'Close', { duration: 3000 });
+            this.resetScrapingObjectForm();
+          }
+        },
+        error: (error) => {
+          console.error('Failed to update company details', error);
+          this.snackBar.open('Failed to update company details', 'Close', { duration: 3000 });
+        }
+      });
     } else {
       console.error('Form is not valid');
-      this.snackBar.open('Form is not valid', 'Close', { duration: 3000 });
+      this.snackBar.open('Please fill all required fields', 'Close', { duration: 3000 });
     }
   }
+
+  private processScrapingObject(formValue: any): void {
+    const rruleString = this.constructRRule(formValue);
+    const scrapingObject: ScrapingObject = {
+      objectDescription: formValue.objectDescription,
+      objectFrequency: rruleString,
+      objectCode: formValue.objectCode
+    };
+  
+    const payload = {
+      companyId: formValue.companyId,
+      scrapingObject: scrapingObject,
+      categories: formValue.categories,
+      companyName: this.selectedCompanyName,
+      companyLogo: formValue.companyLogo,
+      pipelineLink: formValue.pipelineLink
+    };
+  
+    if (this.selectedObjectIndex !== null) {
+      this.updateScrapingObject(payload);
+    } else {
+      this.addScrapingObject(payload);
+    }
+  }
+
+  private updateScrapingObject(payload: any): void {
+    this.dataService.updateScrapingObject(payload.companyId, payload.scrapingObject.objectCode, payload).subscribe({
+      next: (response) => {
+        console.log('Update successful', response);
+        this.snackBar.open('Details updated successfully!', 'Close', { duration: 3000 });
+        if (this.selectedObjectIndex !== null && this.selectedObjectIndex >= 0) {
+          this.scrapingObjects[this.selectedObjectIndex] = payload.scrapingObject;
+        }
+        this.resetScrapingObjectForm();
+      },
+      error: (error) => {
+        console.error('Failed to update data', error);
+        this.snackBar.open('Failed to update object', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  private addScrapingObject(payload: any): void {
+    this.dataService.submitScrapingObject(payload).subscribe({
+      next: (response) => {
+        console.log('Submission successful', response);
+        this.snackBar.open('Details updated successfully!', 'Close', { duration: 3000 });
+        this.scrapingObjects.push(payload.scrapingObject);
+        this.resetScrapingObjectForm();
+      },
+      error: (error) => {
+        console.error('Failed to submit data', error);
+        this.snackBar.open('Failed to save object', 'Close', { duration: 3000 });
+      }
+    });
+  }
+  private resetScrapingObjectForm(): void {
+    this.companyForm.patchValue({
+      objectDescription: '',
+      objectFrequency: '',
+      customCron: '',
+      objectCode: ''
+    });
+    this.customCronVisible = false;
+    this.selectedObjectIndex = null;
+  }
+
+  
+
 
   deleteObject(companyId: string, objectCode: string): void {
     this.scrapingObjects = this.scrapingObjects.filter(obj => obj.objectCode !== objectCode);
@@ -304,4 +371,13 @@ export class ProgrammerConsoleComponent implements OnInit {
   logout(): void {
     this.router.navigate(['/login']);
   }
+
+  isScrapingObjectPartiallyFilled(): boolean {
+    const description = this.companyForm.get('objectDescription')?.value;
+    const frequency = this.companyForm.get('objectFrequency')?.value;
+    const code = this.companyForm.get('objectCode')?.value;
+    
+    return !!(description || frequency || code) && !(description && frequency && code);
+  }
+
 }

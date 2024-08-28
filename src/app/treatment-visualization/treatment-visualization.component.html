@@ -1,0 +1,87 @@
+<div class="wrapper">
+    <div class="banner">
+        <h1 class="banner-title">Demo</h1>
+        <button mat-icon-button class="menu-button" [matMenuTriggerFor]="menu">
+            <mat-icon>apps</mat-icon>
+        </button>
+    </div>
+
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="goToMainConsole()">
+            <mat-icon>home</mat-icon>
+            <span>User Console</span>
+        </button>
+        <button mat-menu-item (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Logout</span>
+        </button>
+    </mat-menu>
+
+    <div class="search-container">
+        <div class="search-row">
+            <mat-form-field appearance="fill">
+                <mat-label>Companies</mat-label>
+                <mat-select multiple [(ngModel)]="selectedCompanies">
+                    <div class="select-all-option">
+                        <mat-checkbox 
+                            (change)="toggleAllCompanies($event.checked)"
+                            [checked]="isAllSelected()"
+                            [indeterminate]="isSomeSelected() && !isAllSelected()"
+                        >
+                            {{ isAllSelected() ? 'Deselect All' : 'Select All' }}
+                        </mat-checkbox>
+                    </div>
+                    <mat-option *ngFor="let company of companies" [value]="company">
+                        {{ company }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Search By</mat-label>
+                <mat-select [(ngModel)]="searchCategory">
+                    <mat-option value="treatment_name">Treatment Name</mat-option>
+                    <mat-option value="indication">Indication</mat-option>
+                    <mat-option value="phase">Phase</mat-option>
+                    <mat-option value="target">Target</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <!-- Conditionally render input field or dropdown -->
+            <mat-form-field appearance="fill" *ngIf="searchCategory !== 'phase'">
+                <mat-label>Search Treatments</mat-label>
+                <input matInput placeholder="Search Treatments" [(ngModel)]="searchTerm">
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" *ngIf="searchCategory === 'phase'">
+                <mat-label>Select Phase</mat-label>
+                <mat-select [(ngModel)]="searchTerm">
+                    <mat-option *ngFor="let phase of phases" [value]="phase">
+                        {{ phase }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="searchTreatments()" id="SearchButton">Search</button>
+    </div>
+
+    <div class="phase-container">
+        <div class="phase-column" *ngFor="let phase of phases">
+            <div class="phase-section phase-card" id="{{ phase.toLowerCase().replace(' ', '-') }}-section">
+                <h2 class="mat-card-title centered-phase-title">{{ phase.toUpperCase() }}</h2>
+                <div *ngIf="(filteredTreatments[phase] || []).length > 0">
+                    <mat-card class="treatment-card" *ngFor="let treatment of filteredTreatments[phase]">
+                        <mat-card-title>{{ treatment.treatment_name }}</mat-card-title>
+                        <mat-card-subtitle>{{ treatment.company_name }}</mat-card-subtitle>
+                        <p class="card-detail"><strong>Indication:</strong> {{ getEnglishText(treatment.indication) }}</p>
+                        <p class="card-detail"><strong>Target:</strong> {{ getEnglishText(treatment.target) }}</p>
+                        <p *ngIf="phase === 'Other'" class="card-detail"><strong>Phase:</strong> {{ treatment.phase }}</p> <!-- Include phase for "Other" category -->
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="scroll-to-top" (click)="scrollToTop()">↑</button>
+</div>

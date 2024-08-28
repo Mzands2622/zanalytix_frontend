@@ -6,9 +6,16 @@
 </div>
 
 <mat-menu #menu="matMenu">
+  <!-- Existing Logout Menu Item -->
   <button mat-menu-item (click)="logout()">
       <mat-icon>exit_to_app</mat-icon>
       <span>Logout</span>
+  </button>
+
+  <!-- New Menu Item for Treatment Visualization -->
+  <button mat-menu-item [routerLink]="['/treatment-visualization', userID]">
+    <mat-icon>search</mat-icon>
+      <span>Treatment Visualization</span>
   </button>
 </mat-menu>
 
@@ -133,13 +140,15 @@
                         <button mat-button type="button" (click)="selectAllCompanies(i)" [disabled]="!isEditing(i)">Select All</button>
                     </h3>
                     <div formGroupName="companies">
-                        <mat-checkbox *ngFor="let company of preferenceSet.get('companyList')?.value" [formControlName]="company">
-                            {{ company }}
-                        </mat-checkbox>
-                        <mat-error *ngIf="editingStates[i] && getCompanyErrorMessage(i)">
-                          {{ getCompanyErrorMessage(i) }}
-                        </mat-error>
-                    </div>
+                      <mat-checkbox *ngFor="let company of preferenceSet.get('companyList')?.value" 
+                                    [formControlName]="company"
+                                    [disabled]="!isEditing(i)">
+                          {{ company }}
+                      </mat-checkbox>
+                      <mat-error *ngIf="editingStates[i] && getCompanyErrorMessage(i)">
+                        {{ getCompanyErrorMessage(i) }}
+                      </mat-error>
+                  </div>
                 </div>
             
                 <!-- Information Type Selection for the Preference Set -->

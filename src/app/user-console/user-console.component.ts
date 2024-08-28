@@ -25,6 +25,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MatMenuModule } from '@angular/material/menu';
+import { RouterModule } from '@angular/router';  // Import RouterModule
+
 
 
 @Component({
@@ -48,7 +50,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatExpansionModule,
     FormsModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    RouterModule
   ],
 })
 export class UserConsoleComponent implements OnInit {
@@ -224,9 +227,29 @@ export class UserConsoleComponent implements OnInit {
     const preferenceSet = this.getPreferenceSetAsFormGroup(index);
     const newTitle = preferenceSet.get('SetTitle')?.value;
     if (newTitle && newTitle.trim() !== '') {
-      // Here you would typically call a method to save the new title to the backend
-      console.log(`Saving new title for preference set ${index}: ${newTitle}`);
-      this.editingTitle = null;
+      const setId = preferenceSet.get('SetID')?.value;
+      
+      // Only proceed if we have a valid SetID
+      if (setId) {
+        this.dataService.updatePreferenceSetTitle(setId, newTitle).subscribe({
+          next: (response) => {
+            console.log(`Title updated for preference set ${setId}`);
+            this.snackBar.open('Title updated successfully', 'Close', { duration: 3000 });
+            this.editingTitle = null;
+          },
+          error: (error) => {
+            console.error('Error updating title:', error);
+            this.snackBar.open('Error updating title. Please try again.', 'Close', { duration: 3000 });
+            // Revert to the original title
+            preferenceSet.patchValue({ SetTitle: this.originalPreferenceSets[index].SetTitle });
+          }
+        });
+      } else {
+        // Handle the case where SetID is not available (new, unsaved preference set)
+        console.log('Updating title for unsaved preference set');
+        this.editingTitle = null;
+        // Here you might want to add some visual indication that this change is not yet saved to the backend
+      }
     } else {
       // If the title is empty, revert to the original title
       preferenceSet.patchValue({ SetTitle: this.originalPreferenceSets[index].SetTitle });
@@ -438,8 +461,9 @@ export class UserConsoleComponent implements OnInit {
       console.log('Dialog result:', result);
       if (result === true) {
         if (preferenceSet.SetID) {
-          console.log('Calling deleteNotificationPreference with SetID:', preferenceSet.SetID);
-          this.dataService.deleteNotificationPreference(preferenceSet.SetID).subscribe({
+          const setId = Number(preferenceSet.SetID); // Ensure SetID is a number
+          console.log('Calling deleteNotificationPreference with SetID:', setId);
+          this.dataService.deleteNotificationPreference(setId).subscribe({
             next: (response) => {
               console.log('Preference set deleted successfully:', response);
               this.snackBar.open('Preference set deleted successfully!', 'Close', { duration: 3000 });
@@ -736,14 +760,6 @@ export class UserConsoleComponent implements OnInit {
         }
       }
     });
-  
-    // Explicitly disable company controls
-    const companiesGroup = preferenceSet.get('companies') as FormGroup;
-    if (companiesGroup) {
-      Object.keys(companiesGroup.controls).forEach(company => {
-        companiesGroup.get(company)?.disable();
-      });
-    }
   
     console.log(`Preference set at index ${index} disabled`);
   }
