@@ -51,6 +51,26 @@
 .menu-button {
     color: white;
     margin-right: 10px;
+    z-index: 1002; /* Increase z-index to ensure it’s above the banner */
+    position: relative; /* Add this */
+}
+
+.mat-menu-panel {
+    z-index: 1003 !important; /* Ensure the menu itself appears above everything */
+}
+
+#mainMenu {
+    position: relative;
+    z-index: 1001;
+}
+
+#mainMenuPanel {
+    position: absolute;
+    z-index: 1002;
+}
+
+::ng-deep .cdk-overlay-container {
+    z-index: 1100;
 }
 
 .menu-button mat-icon {

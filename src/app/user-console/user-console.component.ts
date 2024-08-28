@@ -111,6 +111,13 @@ export class UserConsoleComponent implements OnInit {
           console.log('Categories loaded, calling loadPreferences');
           // After categories are loaded, initialize preferences
           this.loadPreferences(userId);
+          
+          // Ensure all preference sets are disabled after loading
+          setTimeout(() => {
+            this.preferenceSets.controls.forEach((_, index) => {
+              this.disablePreferenceSet(index);
+            });
+          });
         });
       } else {
         console.error('No user ID available in route parameters.');
@@ -761,8 +768,18 @@ export class UserConsoleComponent implements OnInit {
       }
     });
   
+    // Explicitly disable the companies control
+    const companiesGroup = preferenceSet.get('companies') as FormGroup;
+    if (companiesGroup) {
+      Object.keys(companiesGroup.controls).forEach(company => {
+        companiesGroup.get(company)?.disable();
+      });
+    }
+  
     console.log(`Preference set at index ${index} disabled`);
   }
+  
+  
 
 private enablePreferenceSet(index: number): void {
   const preferenceSet = this.getPreferenceSetAsFormGroup(index);
@@ -836,21 +853,34 @@ private fetchAndUpdateCompaniesAfterInitialization(set: any, setIndex: number): 
   });
 }
 
-  private updateCompaniesInForm(setIndex: number, companies: string[], set: any): void {
-    const preferenceSetGroup = this.getPreferenceSetAsFormGroup(setIndex);
-    const companiesGroup = preferenceSetGroup.get('companies') as FormGroup;
+private updateCompaniesInForm(setIndex: number, companies: string[], set: any): void {
+  const preferenceSetGroup = this.getPreferenceSetAsFormGroup(setIndex);
+  const companiesGroup = preferenceSetGroup.get('companies') as FormGroup;
 
-    companies.forEach(company => {
-      if (!companiesGroup.get(company)) {
-        companiesGroup.addControl(company, new FormControl(false));
-      }
+  // Remove old controls
+  Object.keys(companiesGroup.controls)
+    .filter(company => !companies.includes(company))
+    .forEach(company => companiesGroup.removeControl(company));
 
-      // Use the passed set object to check if the company exists
-      if (set.hasOwnProperty(company)) {
-        companiesGroup.get(company)?.setValue(set[company]);
-      }
+  // Add new controls
+  companies.forEach(company => {
+    if (!companiesGroup.get(company)) {
+      companiesGroup.addControl(company, new FormControl(false));
+    }
+
+    // Use the passed set object to check if the company exists
+    if (set.hasOwnProperty(company)) {
+      companiesGroup.get(company)?.setValue(set[company]);
+    }
+  });
+
+  // Disable all company controls if not in edit mode
+  if (!this.editingStates[setIndex]) {
+    Object.keys(companiesGroup.controls).forEach(company => {
+      companiesGroup.get(company)?.disable();
     });
   }
+}
 
 
   private createPreferenceSet(): FormGroup {
@@ -964,6 +994,12 @@ private fetchAndUpdateCompaniesAfterInitialization(set: any, setIndex: number): 
             const companies = Array.from(new Set(responses.flat()));
             this.updateCompanies(preferenceSetGroup, companies);
             this.updateInfoTypes(preferenceSetGroup, selectedCategories);
+            
+            // Disable companies if not in edit mode
+            if (!this.editingStates[setIndex]) {
+              this.disableCompanies(setIndex);
+            }
+            
             this.cdr.detectChanges();
           },
           error => console.error('Error loading companies', error)
@@ -972,6 +1008,16 @@ private fetchAndUpdateCompaniesAfterInitialization(set: any, setIndex: number): 
       this.updateCompanies(preferenceSetGroup, []);
       this.updateInfoTypes(preferenceSetGroup, []);
       this.cdr.detectChanges();
+    }
+  }
+
+  private disableCompanies(index: number): void {
+    const preferenceSet = this.getPreferenceSetAsFormGroup(index);
+    const companiesGroup = preferenceSet.get('companies') as FormGroup;
+    if (companiesGroup) {
+      Object.keys(companiesGroup.controls).forEach(company => {
+        companiesGroup.get(company)?.disable();
+      });
     }
   }
   
