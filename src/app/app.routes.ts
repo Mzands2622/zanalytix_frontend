@@ -7,8 +7,8 @@ import { ProgrammerConsoleComponent } from './programmer-console/programmer-cons
 import { AdminConsoleComponent } from './admin-console/admin-console.component';
 import { ProgrammerContactComponent } from './programmer-contact/programmer-contact.component';
 import { TreatmentVisualizationComponent } from './treatment-visualization/treatment-visualization.component';
-
-
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';  // Import the ResetPasswordComponent
 
 export const routes: Routes = [
   { path: '', component: HomepageComponent },  // Default route
@@ -19,5 +19,7 @@ export const routes: Routes = [
   { path: 'admin-console/:userId', component: AdminConsoleComponent },  // Admin console with dynamic userId
   { path: 'programmer-contact/:userId', component: ProgrammerContactComponent },
   { path: 'user-console/:userId', component: UserConsoleComponent },
-  { path: 'treatment-visualization/:userId', component: TreatmentVisualizationComponent }  // Add other routes here as needed
+  { path: 'treatment-visualization/:userId', component: TreatmentVisualizationComponent },  // Add other routes here as needed
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent }  // Ensure this component is imported
 ];

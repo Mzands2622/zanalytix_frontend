@@ -59,4 +59,15 @@ export class AuthService {
   setUserId(userId: string): void {
     this.userId = userId;
   }
+
+  forgotPassword(email: string): Observable<any> {
+    const url = `${this.baseUrl}forgot-password`;
+    return this.http.post(url, { email });
+  }
+
+
+  resetPassword(token: string, password: string): Observable<any> {
+    const url = `${this.baseUrl}reset-password/${token}`;
+    return this.http.post(url, { password });
+  }
 }

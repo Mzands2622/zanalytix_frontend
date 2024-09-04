@@ -1,281 +1,337 @@
 :host {
-    display: block;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    width: 100vw;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-family: 'Roboto', sans-serif;
-  }
+  display: block;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100vw;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-family: 'Roboto', sans-serif;
+}
 
-  /* Banner Styling */
-  .banner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 100vw;
-    background-color: rgba(102, 126, 234, 0.9);
-    padding: 10px 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    border-radius: 0 0 8px 8px;
-    color: white;
-  }
-  
-  .banner-title {
-    color: white;
-    font-size: 1.75rem;
-    font-weight: bold;
-    margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-  
-  .menu-button {
-    color: white;
-    margin-right: 10px;
-  }
-  
-  .menu-button mat-icon {
-    font-size: 1.8rem;
-  }
-  
-  /* Card Styling */
-  mat-card {
-    padding: 32px;
-    background-color: #f3f4f6; /* Background color for the card */
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    max-width: 700px; /* Adjusted width to make the card narrower */
-    margin: 120px auto 30px auto; /* Top margin adjusted to account for the fixed banner */
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    position: relative;
-    z-index: 2;
-    margin-top: 20px;
-  }
-  
-  mat-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Card header */
-  mat-card-header {
-    margin-bottom: 40px;
-    text-align: center;
-  }
-  
-  /* Title styling */
-  mat-card-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #1976d2;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  
-  /* Form fields */
-  .mat-form-field {
-    width: 100%;
-    margin-bottom: 20px;
-  }
-  
-  /* First and last name fields */
+/* Banner Styling */
+.banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 100vw;
+  background-color: rgba(102, 126, 234, 0.9);
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  border-radius: 0 0 8px 8px;
+  color: white;
+}
+
+.banner-title {
+  color: white;
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.menu-button {
+  color: white;
+  margin-right: 10px;
+}
+
+.menu-button mat-icon {
+  font-size: 1.8rem;
+}
+
+/* Card Styling */
+mat-card {
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  max-width: 700px; /* Adjusted width to make the card narrower */
+  margin: 120px auto 30px auto; /* Top margin adjusted to account for the fixed banner */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  position: relative;
+  z-index: 2;
+  margin-top: 20px;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+mat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Card header */
+mat-card-header {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* Title styling */
+mat-card-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Form fields */
+.mat-form-field {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* First and last name fields */
+.name-fields {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
   .name-fields {
-    display: flex;
-    justify-content: center;
-    gap: 24px;
-  }
-  
-  @media (max-width: 768px) {
-    .name-fields {
-      flex-direction: column;
-      align-items: center;
-    }
-  }
-  
-  /* Contact row styling */
-  .contact-row {
-    display: flex;
-    gap: 20px;
+    flex-direction: column;
     align-items: center;
-    margin-bottom: 14px;
   }
-  
-  /* Divider styling */
-  mat-divider {
-    margin: 32px 0;
-    border-width: 0.5px;
-    border-color: #bdbdbd;
-    border-style: solid;
-  }
-  
-  /* Buttons row */
+}
+
+/* Contact row styling */
+.contact-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+/* Divider styling */
+mat-divider {
+  margin: 32px 0;
+  border-width: 0.5px;
+  border-color: #bdbdbd;
+  border-style: solid;
+}
+
+/* Buttons row */
+.buttons-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+@media (max-width: 768px) {
   .buttons-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 40px;
-  }
-  
-  @media (max-width: 768px) {
-    .buttons-row {
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-  }
-  
-  /* Add Contact button */
-  .add-contact-button {
-    color: #1976d2;
-    font-weight: bold;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: color 0.3s ease-in-out;
-  }
-  
-  .add-contact-button:hover {
-    color: #115293;
-    text-decoration: underline;
-  }
-  
-  /* Save Preferences button */
-  .save-preferences-button {
-    background-color: #1976d2;
-    color: white;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-  }
-  
-  .save-preferences-button:hover {
-    background-color: #115293;
-  }
-  
-  /* General input styling */
-  input, mat-select {
-    border-radius: 6px;
-  }
-  
-  .mat-form-field-appearance-fill .mat-form-field-flex {
-    background-color: #fafafa;
-  }
-  
-  .mat-select-placeholder {
-    color: #9e9e9e;
-  }
-  
-  .mat-select-arrow {
-    color: #1976d2;
-  }
-  
-  /* Section title and select-all button alignment */
-  .section-header {
-    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 8px;
+    gap: 20px;
   }
-  
-  .section-title {
-    font-size: 1.3em;
-    font-weight: 500;
-    margin-right: 10px;
-  }
-  
-  /* Preference button styling */
-  .preference-button {
-    border-radius: 20px;
-    margin: 3px;
-    padding: 6px 12px;
-    background-color: #f0f0f0;
-    color: #007bff;
-    border: 1px solid transparent;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease-in-out;
-  }
-  
-  .preference-button.selected {
-    background-color: #007bff;
-    color: white;
-    border: 1px solid #007bff;
-  }
-  
-  /* Select All button styling */
-  .select-all-button {
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    color: #1976d2;
-    background-color: #e0f7fa;
-    border-radius: 20px;
-    padding: 4px 10px;
-    cursor: pointer;
-    border: 1px solid #1976d2;
-    transition: background-color 0.3s ease-in-out;
-  }
-  
-  .select-all-button:hover {
-    background-color: #b3e5fc;
-  }
-  
-  /* Details section header styling */
-  .detail-section-header {
-    font-size: 1.3em;
-    font-weight: 500;
-    margin-right: 10px;
-  }
-  
-  /* Action buttons styling */
+}
+
+/* Add Contact button */
+.add-contact-button {
+  color: #1976d2;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.add-contact-button:hover {
+  color: #115293;
+  text-decoration: underline;
+}
+
+/* Save Preferences button */
+.save-preferences-button {
+  background-color: #1976d2;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.save-preferences-button:hover {
+  background-color: #115293;
+}
+
+/* General input styling */
+input, mat-select {
+  border-radius: 6px;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: #fafafa;
+}
+
+.mat-select-placeholder {
+  color: #9e9e9e;
+}
+
+.mat-select-arrow {
+  color: #1976d2;
+}
+
+/* Section title and select-all button alignment */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: 1.3em;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+/* Preference button styling */
+.preference-button {
+  border-radius: 20px;
+  margin: 3px;
+  padding: 6px 12px;
+  background-color: #f0f0f0;
+  color: #007bff;
+  border: 1px solid transparent;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.preference-button.selected {
+  background-color: #007bff;
+  color: white;
+  border: 1px solid #007bff;
+}
+
+/* Select All button styling */
+.select-all-button {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: #1976d2;
+  background-color: #e0f7fa;
+  border-radius: 20px;
+  padding: 4px 10px;
+  cursor: pointer;
+  border: 1px solid #1976d2;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.select-all-button:hover {
+  background-color: #b3e5fc;
+}
+
+/* Details section header styling */
+.detail-section-header {
+  font-size: 1.3em;
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+/* Action buttons styling */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
   .action-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    flex-direction: column;
+    gap: 10px;
   }
-  
-  @media (max-width: 768px) {
-    .action-buttons {
-      flex-direction: column;
-      gap: 10px;
-    }
-  }
-  
-  /* Add Notification Button */
-  .add-notification-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-    margin-bottom: 30px;
-  }
-  
-  .add-notification-button {
-    background-color: #1976d2;
-    color: white;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
-  }
-  
-  .add-notification-button:hover {
-    background-color: #115293;
-  }
-  
-  /* Search field adjustments */
-  .search-field {
-    width: 100%;
-    max-width: 250px;
-    float: right;
-    margin-bottom: 10px;
-    margin-left: auto;
-  }
-  
-  .preferences-content {
-    clear: both;
-  }
-  
+}
+
+/* Add Notification Button */
+.add-notification-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+
+/* Add Notification Button */
+.add-notification-button {
+  background-color: rgba(255, 255, 255, 0.2) !important; /* Softer button background */
+  color: #cadcee !important; /* Set the text color */
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Border to define the button */
+}
+
+
+
+.add-notification-button:hover {
+  background-color: rgba(255, 255, 255, 0.3); /* Slightly brighter on hover */
+  color: white; /* Text changes to white on hover */
+}
+
+/* Search field adjustments */
+.search-field {
+  width: 100%;
+  max-width: 250px;
+  float: right;
+  margin-bottom: 10px;
+  margin-left: auto;
+}
+
+.preferences-content {
+  clear: both;
+}
+
+#preferences-title {
+  margin-top: 10px;
+}
+
+#detail_id {
+  width: 300px;
+}
+
+
+mat-expansion-panel {
+  background-color: rgba(255, 255, 255, 0.1); /* Adjust background color for the panel */
+  border-radius: 8px; /* Add some border-radius for a softer look */
+  margin-bottom: 10px; /* Space between each panel */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for the header of each panel */
+mat-expansion-panel-header {
+  background-color: rgba(255, 255, 255, 0.2); /* Slightly darker background for the header */
+  color: white; /* Ensure text remains visible */
+  border-radius: 8px 8px 0 0; /* Rounded corners at the top */
+}
+
+/* Adjusting the look of the content area within the panel */
+.mat-expansion-panel-content {
+  background-color: rgba(255, 255, 255, 0.05); /* Even lighter background for content area */
+  padding: 16px; /* Add some padding for spacing */
+  border-radius: 0 0 8px 8px; /* Rounded corners at the bottom */
+}
+
+/* Adjust hover state for the header */
+mat-expansion-panel-header:hover {
+  background-color: rgba(255, 255, 255, 0.3); /* Slightly darker on hover */
+}
+
+mat-expansion-panel-header {
+  font-size: 17px;
+  letter-spacing: 1px;
+}
+
+
+mat-expansion-panel-header .mat-expansion-panel-header-title {
+  color: white;
+  /* font-weight: bold !important; */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* #notification-button {
+  color: #1976d2;
+  background-color: #bfa9c7 ;
+} */

@@ -1,10 +1,25 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 450px;
+  height: 450px;
 }
 
 .login-content {
@@ -12,80 +27,149 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 400px;
+  height: 100%;
+  max-width: 450px;
+  max-height: 450px;
+  z-index: 10;
+  transition: all 0.5s ease-out;
+}
+
+.login-content.shrink {
+  transform: scale(0);
+  opacity: 0;
 }
 
 .login-card {
   width: 100%;
+  height: 100%;
   padding: 2rem;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.logo-container {
   text-align: center;
-  margin-bottom: 1rem;
-}
-
-.logo {
-  max-width: 150px;
-  height: auto;
+  box-sizing: border-box;
+  background: radial-gradient(circle, rgba(30, 41, 59, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
+  border: 2px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
 }
 
 mat-card-title {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   text-align: center;
   margin-bottom: 0.5rem;
+  color: #60a5fa;
+  text-shadow: 0 0 5px rgba(96, 165, 250, 0.5);
 }
 
 mat-card-subtitle {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 16px;
+  color: #93c5fd;
+}
+
+mat-card-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+form {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 mat-form-field {
-  width: 100%;
-  margin-bottom: 1rem;
+  width: 80%;
+  color: #f8fafc;
 }
 
 .form-actions {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0 10px;
+}
+
+.form-actions mat-checkbox p {
+  margin: 0;
+  padding-top: 1px; /* Adjust this value to push the text down */
+  color: #60a5fa;
+  text-decoration: none;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(96, 165, 250, 0.5);
+  font-size: 14px;
+  margin-left: -5px;
+}
+
+.form-actions mat-checkbox {
+  z-index: 20;
+  position: relative;
+  margin-right: -10px;
 }
 
 .forgot-password {
-  color: #3f51b5;
+  color: #60a5fa;
   text-decoration: none;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(96, 165, 250, 0.5);
   font-size: 14px;
+  white-space: nowrap;
+  margin-right: 5px;
 }
 
 .login-button {
   width: 100%;
-  height: 48px;
+  height: 40px;
   font-size: 16px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: #2563eb !important;
+  color: #f8fafc !important;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
 }
 
 .signup-prompt {
   text-align: center;
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 0;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
 }
 
 .signup-prompt a {
-  color: #3f51b5;
-  text-decoration: none;
-  font-weight: 500;
+  color: #60a5fa;
+  font-weight: bold;
+  text-shadow: 0 0 3px rgba(96, 165, 250, 0.5);
 }
 
 .company-name {
-  color: white;
-  font-size: 36px;
-  font-weight: bold;
   text-align: center;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  margin-bottom: 1rem;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+mat-form-field .mat-input-element {
+  color: #60a5fa !important; /* Change this color to whatever you prefer */
+}
+
+mat-form-field .mat-input-element::placeholder {
+  color: #93c5fd !important; /* Change placeholder color if desired /
+  opacity: 1; / Ensures the color is applied */
+}
+
+mat-form-field .mat-input-element:focus {
+  color: #ffffff !important; /* Change the color when the input is focused */
+}
+
+/* Optional: Change the border color when typing  */
+mat-form-field.mat-focused .mat-form-field-outline {
+  stroke: #60a5fa !important;
 }

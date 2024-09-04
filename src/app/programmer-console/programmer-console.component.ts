@@ -237,23 +237,32 @@ export class ProgrammerConsoleComponent implements OnInit {
   onSubmit(): void {
     if (this.companyForm.valid) {
       const formValue = this.companyForm.value;
-      
+
       if (this.isScrapingObjectPartiallyFilled()) {
         this.snackBar.open('Please fill all fields for the scraping object or clear all fields', 'Close', { duration: 5000 });
         return;
       }
-  
+
+      // Check for duplicate object code before any submission
+      if (formValue.objectCode) {
+        const existingObject = this.scrapingObjects.find(obj => obj.objectCode === formValue.objectCode);
+        if (existingObject) {
+          this.snackBar.open('A scraping object with this code already exists. Please use a different code.', 'Close', { duration: 5000 });
+          return; // Exit the method early, preventing any submission
+        }
+      }
+
       const updatedCompanyData = {
         companyId: formValue.companyId,
         companyLogo: formValue.companyLogo,
         pipelineLink: formValue.pipelineLink,
         categories: formValue.categories,
       };
-  
+
       this.dataService.updateCompanyDetails(updatedCompanyData).subscribe({
         next: (response) => {
           console.log('Company details update successful', response);
-          
+
           if (formValue.objectDescription && formValue.objectFrequency && formValue.objectCode) {
             this.processScrapingObject(formValue);
           } else {
