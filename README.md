@@ -14,12 +14,14 @@ The front-end of the **Zanalytix Pharma Pipeline Scraper** provides an intuitive
 ## Technologies Used
 
 - **Framework:** Angular 14+
-- **Styling:** Angular Material, SCSS
-- **API Integration:** RESTful APIs for back-end communication
-- **Authentication:** JSON Web Tokens (JWT)
-- **Routing:** Angular Router
+- **Programming Language:** TypeScript (TS) for static typing and enhanced developer experience
+- **Styling:** Angular Material, SCSS, HTML5, and CSS3
+- **Routing:** Angular Router for navigation between components and routes
+- **Authentication:** JSON Web Tokens (JWT) for secure authentication and authorization
+- **API Integration:** RESTful APIs for fetching and displaying data from the back-end server
 
 ## Future Enhancements
+
 - Multi-language support for international users.
 - Enhanced reporting tools and data visualizations.
 - Integration with additional data sources for broader insights.
