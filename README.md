@@ -23,9 +23,3 @@ The front-end of the **Zanalytix Pharma Pipeline Scraper** provides an intuitive
 - Multi-language support for international users.
 - Enhanced reporting tools and data visualizations.
 - Integration with additional data sources for broader insights.
-
-## API Endpoints
-- GET /pipelines: Retrieve all pipeline data.
-- POST /notifications: Add or update notification preferences.
-- PUT /scraping-objects: Update scraping configurations.
-- DELETE /pipelines/{id}: Remove a pipeline entry.
