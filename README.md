@@ -1,27 +1,31 @@
-# ZanalytixConsoles
+# Zanalytix Pharma Pipeline Scraper - Front-End
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.0.
+## Overview
 
-## Development server
+The front-end of the **Zanalytix Pharma Pipeline Scraper** provides an intuitive and responsive interface for pharmaceutical professionals to access up-to-date drug pipeline and approval information. Built with Angular, this application connects seamlessly with the back-end services to deliver a modern and streamlined user experience.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- **User Authentication:** Secure role-based login system.
+- **Interactive Dashboard:** Displays pharmaceutical data dynamically.
+- **Notification Preferences:** Allows users to set custom alerts for pipeline changes or events.
+- **Responsive Design:** Optimized for all devices, from desktops to mobile phones.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Technologies Used
 
-## Build
+- **Framework:** Angular 14+
+- **Styling:** Angular Material, SCSS
+- **API Integration:** RESTful APIs for back-end communication
+- **Authentication:** JSON Web Tokens (JWT)
+- **Routing:** Angular Router
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Future Enhancements
+- Multi-language support for international users.
+- Enhanced reporting tools and data visualizations.
+- Integration with additional data sources for broader insights.
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## API Endpoints
+- GET /pipelines: Retrieve all pipeline data.
+- POST /notifications: Add or update notification preferences.
+- PUT /scraping-objects: Update scraping configurations.
+- DELETE /pipelines/{id}: Remove a pipeline entry.
